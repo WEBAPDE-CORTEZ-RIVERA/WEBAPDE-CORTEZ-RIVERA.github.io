@@ -292,8 +292,6 @@
                 var name = decodeURI(data.name);
                 name = name.replace(/@/g, '');
                 
-                document.title = name;
-                
                 initializeProfile(name);
                 
             }
@@ -334,7 +332,7 @@
                                 getPosts();
                             }
                         }
-                            
+                        document.title = user.name;
                     }
                 });
             }
