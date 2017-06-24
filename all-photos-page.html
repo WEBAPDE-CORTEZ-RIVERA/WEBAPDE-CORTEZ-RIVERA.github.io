@@ -1,0 +1,217 @@
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Montserrat|Montserrat+Alternates:600" rel="stylesheet">
+        
+        <script src = "jquery-3.2.1.js"></script>
+        
+        <title>All Photos</title>
+        
+        <style>
+            body{
+                padding:0;
+                margin:0;
+                margin-top:140px;
+                background-color:#dbdbdb;
+            }
+            
+            /* header */
+            .header{
+                position:fixed;
+                display:flex;
+                top:0px;
+                flex-direction:column;
+                width:100%;
+                height:120px;
+                background-image:url("bg-index2.jpg");
+                background-position: -1000px -0x;
+            }
+            .header-buttons{
+                display:flex;
+                margin:auto;
+                align-content:center;
+                justify-content:center;
+            }
+            #header-logo p{
+                padding:0;
+                color:#f0f0f0;
+                margin-top:15px;
+                text-align:center;
+                font-size-adjust:auto;
+                font-size:220%;
+                font-family: 'Montserrat Alternates', sans-serif;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #header-logo p:hover{
+                color:#557c83;
+                text-shadow:2px 2px #f0f0f0; 
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #home-button{
+                width:35px;
+                height:29px;
+                margin-top:-40px;
+                margin-right:20px;
+                background-image:url("spritesheet.png");
+                background-position:-35px 0px;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #home-button:hover{
+                opacity:0.5;
+                filter:drop-shadow(2px 2px #557c83);
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #album-button{
+                width:38px;
+                height:29px;
+                margin-top:-40px;
+                margin-right:20px;
+                background-image:url("spritesheet.png");
+                background-position:0px 0px;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #album-button:hover{
+                opacity:0.5;
+                filter:drop-shadow(2px 2px #557c83);
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #users-button{
+                width:38px;
+                height:29px;
+                margin-top:-40px;
+                background-image:url("spritesheet.png");
+                background-position:-67px 0px;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #users-button:hover{
+                opacity:0.5;
+                filter:drop-shadow(2px 2px #557c83);
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            
+            /* photos container */
+            #photos-container{
+                display:inline-block;
+                width:100%;
+                text-align:center;
+            }
+            .photo-item-container{
+                width:auto;
+                height:auto;
+                padding:2%;
+                margin:2%;
+                display: inline-block;
+                background-color:#ffffff;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            .photo-item-container:hover{
+                background-color:#f0f0f0;
+                box-shadow:0px 20px #557c83;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            .img{
+                display:inline-block;
+                width:100%;
+                height:auto;
+            }     
+            
+            /* footer */
+            .footer{
+                width:100%;
+                margin-top:50px;
+                margin-bottom:50px;
+                text-align:center;
+            }
+            #view-button{
+                width:10%;
+                height:7%;
+                background-color:#557c83;
+                color:#f0f0f0;
+                border:none;
+                font-family:'Montserrat', sans-serif;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #view-button:hover{
+                opacity:0.5;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+        </style>
+        
+        <script>
+            // function to get pics 15 pics at a time
+            function getPics(index){
+                 $.ajax({
+                    url: "https://jsonplaceholder.typicode.com/photos",
+                    type: "GET",
+                    success: function(data){
+                      
+                      for(var orig=index; orig<(index + 15); orig++){
+                          var new_photo = document.createElement("img");
+                          var new_pic = document.createElement("div");
+                          
+                          $(new_photo).addClass("img");
+                          $(new_pic).addClass("photo-item-container");
+                          
+                          new_photo.src = data[orig].thumbnailUrl + "";
+                          
+                          $(new_pic).append(new_photo);
+                          
+                          $("#photos-container").append(new_pic);
+                          
+                          console.log(orig);
+                      }
+                    }
+                });        
+            }
+            
+            //when document is ready
+            $(document).ready(function(){
+                //for pics
+                var index = 0;
+                getPics(index);
+                
+                console.log("Document Ready");
+                
+                $("#view-button").click(function(){
+                    index +=15;
+                    console.log("Clicked!");
+                    getPics(index);
+                });
+                
+                //for albums
+            });
+        </script>
+    </head>
+    
+    <body>
+        <div class="header">
+            <div id="header-logo">
+                <p>placeholder</p>
+            </div>
+            <div class="header-buttons">
+                <a href="index.html"><div id="home-button"></div></a>
+                <a href="all-photos-page.html"><div id="album-button"></div></a>
+                <div id="users-button"></div>
+            </div>
+        </div>
+        
+        <p id= "blah"></p>
+        
+        <div id="photos-container"></div>
+        
+        <div class="footer">
+            <button id="view-button">VIEW MORE</button>
+        </div>
+    </body>
+</html>

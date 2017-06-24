@@ -1,0 +1,275 @@
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Montserrat|Montserrat+Alternates:600" rel="stylesheet">
+        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        
+        <script src = "jquery-3.2.1.js"></script>
+        
+        <title>User Profile</title>
+        
+        <style>
+            body{
+                padding:0;
+                margin:0;
+                margin-top:120px;
+                background-color:#dbdbdb;
+                height:100%;
+                justify-content:center;
+            }
+            
+            /* header */
+            .header{
+                position:fixed;
+                display:flex;
+                top:0px;
+                flex-direction:column;
+                width:100%;
+                height:120px;
+                margin-bottom:50px;
+                background-image:url("bg-index2.jpg");
+                background-position: -1000px -0x;
+            }
+            .header-buttons{
+                display:flex;
+                margin:auto;
+                align-content:center;
+                justify-content:center;
+            }
+            #header-logo p{
+                padding:0;
+                color:#f0f0f0;
+                margin-top:15px;
+                text-align:center;
+                font-size-adjust:auto;
+                font-size:220%;
+                font-family: 'Montserrat Alternates', sans-serif;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #header-logo p:hover{
+                color:#557c83;
+                text-shadow:2px 2px #f0f0f0; 
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #home-button{
+                width:35px;
+                height:29px;
+                margin-top:-40px;
+                margin-right:20px;
+                background-image:url("spritesheet.png");
+                background-position:-35px 0px;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #home-button:hover{
+                opacity:0.5;
+                filter:drop-shadow(2px 2px #557c83);
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #album-button{
+                width:38px;
+                height:29px;
+                margin-top:-40px;
+                margin-right:20px;
+                background-image:url("spritesheet.png");
+                background-position:0px 0px;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #album-button:hover{
+                opacity:0.5;
+                filter:drop-shadow(2px 2px #557c83);
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #users-button{
+                width:38px;
+                height:29px;
+                margin-top:-40px;
+                background-image:url("spritesheet.png");
+                background-position:-67px 0px;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #users-button:hover{
+                opacity:0.5;
+                filter:drop-shadow(2px 2px #557c83);
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            
+            /* content */
+            .posts-container{
+                float:right;
+                width:65%;
+                height:80%;
+                overflow:auto;
+                background-color:#ffffff;
+            }
+            
+            /* profile sidebar */
+            .sidebar-container{
+                padding:0;
+                position:fixed;
+                float:left;
+                width:35%;
+                height:0%;
+                overflow:auto;
+                background-color:#dbdbdb;
+            }
+            .sidebar{
+                position:fixed;
+                display:flex;
+                flex-direction:column;
+                top:150px;
+                left:150px;
+                bottom:50px;
+                right:0px;
+                width: 250px;
+                background-color:#ffffff;
+                box-shadow:0px 20px #557c83;
+                overflow:auto;
+            }
+            .profile-photo{
+                position:relative;
+                margin-left:auto;
+                margin-right:auto;
+                margin-top:30px;
+                margin-bottom:20px;
+                border:10px solid #dbdbdb;
+                border-radius:100%;
+                height:90px;
+                width:90px;
+            }
+            .name{
+                position:relative;
+                margin-left:auto;
+                margin-right:auto;
+                color:#557c83;
+                font-size:140%;
+                font-family:'Montserrat', sans-serif;
+            }
+            .username{
+                position:relative;
+                margin-left:auto;
+                margin-right:auto;
+                margin-bottom:10px;
+                color:#969696;
+                font-style:italic;
+                font-size:80%;
+                font-family:'Montserrat', sans-serif;
+            }
+            .email div::before{
+                font-family: "FontAwesome";
+                content: "\f003";
+                color:#557c83;
+                margin-left:-10px;
+                margin-right:10px;
+            }
+            .address div::before{
+                font-family: "FontAwesome";
+                content: "\f015";
+                color:#557c83;
+                margin-left:-10px;
+                margin-right:10px;
+            }
+            .phone div::before{
+                font-family: "FontAwesome";
+                content: "\f095";
+                color:#557c83;
+                margin-left:-10px;
+                margin-right:10px;
+            }
+            .web div::before{
+                font-family: "FontAwesome";
+                content: "\f0ac";
+                color:#557c83;
+                margin-left:-10px;
+                margin-right:10px;
+            }
+            .comp div::before{
+                font-family: "FontAwesome";
+                content: "\f2bc";
+                color:#557c83;
+                margin-left:-10px;
+                margin-right:10px;
+            }
+            .info-content{
+                text-align:left;
+                position:relative;
+                margin-bottom:10px;
+                margin-left:auto;
+                margin-right:10px;
+                text-align:left;
+                color:#000000;
+                font-size:80%;
+                font-family:'Montserrat', sans-serif;
+            }
+            
+            /* footer */
+            .footer{
+                width:100%;
+                bottom:0;
+                text-align:center;
+                justify-content:flex-end;
+            }
+            #view-button{
+                width:20%;
+                height:7%;
+                background-color:#557c83;
+                color:#f0f0f0;
+                border:none;
+                font-family:'Montserrat', sans-serif;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #view-button:hover{
+                opacity:0.5;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+        </style>
+        
+        <script>
+        
+        </script>
+    </head>
+    
+    <body>
+        <div class="header">
+            <div id="header-logo">
+                <p>placeholder</p>
+            </div>
+            <div class="header-buttons">
+                <a href="index.html"><div id="home-button"></div></a>
+                <a href="all-photos-page.html"><div id="album-button"></div></a>
+                <div id="users-button"></div>
+            </div>
+        </div>
+        
+        <div class="sidebar-container">
+            <div class="sidebar">
+                <img src="fd0c559856ca991e9e28937dc802f0b0.jpg" class="profile-photo"></img>
+                <div class="name">Cupcake Dog</div>
+                <div class="username">@kupkeykd</div>
+                <ul class="fa-ul">
+                    <li class="email"><div class="info-content">dogs4lyf@doogle.com</div></li>
+                    <li class="address"><div class="info-content">#45 Paws St., New Bark City</div></li>
+                    <li class="phone"><div class="info-content">09167263345</div></li>
+                    <li class="web"><div class="info-content">twitter.com/dogs4lyf</div></li>
+                    <li class="comp"><div class="info-content">Barkin' Blends</div></li>
+                </ul>
+            </div>
+        </div>
+        
+    
+        <div class="posts-container">
+            <div class="footer">
+                <button id="view-button">VIEW MORE</button>
+            </div>
+        </div>
+    </body>
+</html>
