@@ -310,6 +310,20 @@
                 console.log("Clicked!");
                 getPosts(x);
             });
+            
+            $("#posts-container").on('click', ".username-post", function(){
+                var name_temp = $(this).text();
+                var url = 'user-profile.html?name=' + name_temp;
+                
+                document.location.href = url;
+            });
+            
+            $("#posts-container").on('click', ".username2-post", function(){
+                var name_temp = $(this).text();
+                var url = 'user-profile.html?name=' + name_temp;
+                
+                document.location.href = url;
+            });
         });
         </script>
     </head>

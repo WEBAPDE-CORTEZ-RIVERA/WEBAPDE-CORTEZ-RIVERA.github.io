@@ -101,34 +101,36 @@
                 transition-timing-function:ease;
             }
             
-            /* content */
+            /* content 
             .posts-container{
+                position:relative;
+                display:inline-block;
                 float:right;
+                margin-right:0;
                 width:65%;
                 height:80%;
                 overflow:auto;
                 background-color:#ffffff;
-            }
+            }*/
             
-            /* profile sidebar */
+            /* profile sidebar 
             .sidebar-container{
                 padding:0;
-                position:fixed;
                 float:left;
                 width:35%;
                 height:0%;
                 overflow:auto;
                 background-color:#dbdbdb;
-            }
+            }*/
             .sidebar{
-                position:fixed;
+                position:absolute;
                 display:flex;
                 flex-direction:column;
                 top:150px;
                 left:150px;
-                bottom:50px;
-                right:0px;
-                width: 250px;
+                width: 300px;
+                height:auto;
+                min-height:40%;
                 background-color:#ffffff;
                 box-shadow:0px 20px #557c83;
                 overflow:auto;
@@ -208,16 +210,32 @@
                 font-size:80%;
                 font-family:'Montserrat', sans-serif;
             }
+            .view-posts, .view-photos{
+                width:80%;
+                height:40px;
+                margin-bottom:10px;
+                margin-left:auto;
+                margin-right:auto;
+                background-color:#dbdbdb;
+                color:#557c83;
+                border:none;
+                font-family:'Montserrat', sans-serif;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            .view-posts:hover, .view-photos:hover{
+                opacity:0.5;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
             
             /* footer */
             .footer{
                 width:100%;
-                bottom:0;
                 text-align:center;
-                justify-content:flex-end;
             }
             #view-button{
-                width:20%;
+                width:10%;
                 height:7%;
                 background-color:#557c83;
                 color:#f0f0f0;
@@ -234,7 +252,131 @@
         </style>
         
         <script>
-        
+            var user;
+            
+            window.onload = function () {
+                var url = document.location.href,
+                params = url.split('?')[1].split('&'),
+                data = {}, tmp;
+                for (var i = 0, l = params.length; i < l; i++) {
+                    tmp = params[i].split('=');
+                    data[tmp[0]] = tmp[1];
+                }
+                
+                var name = decodeURI(data.name);
+                name = name.replace(/@/g, '');
+                
+                console.log(name);
+                
+                initializeProfile(name);
+            }
+            
+            var Profile = function(id, name, username, email, address, phone, website, company){
+                this.id = id;
+                this.name = name;
+                this.username = username;
+                this.email = email;
+                this.address = address;
+                this.phone = phone;
+                this.website = website;
+                this.company = company;
+            }
+            
+            function initializeProfile(name){
+                $.ajax({
+                    url: "https://jsonplaceholder.typicode.com/users",
+                    type: "GET",
+                    success: function(data){
+                        for(i=0; i<data.length; i++){
+                            if((data[i].name).localeCompare(name) == 0 ||
+                               (data[i].username).localeCompare(name) == 0){
+                                user = new Profile(data[i].id, data[i].name,
+                                                   data[i].username, data[i].email,
+                                                   data[i].address, data[i].phone,
+                                                   data[i].website, data[i].company);
+                                console.log(user);
+                                
+                                createSideBar();
+                            }
+                        }
+                            
+                    }
+                });
+            }
+            
+            function createSideBar(){
+                var new_sb = document.createElement("div");
+                var new_photo = document.createElement("img");
+                var new_name = document.createElement("div");
+                var new_username = document.createElement("div");
+                var new_fi = document.createElement("ul");
+                var new_em = document.createElement("li");
+                var new_ad = document.createElement("li");
+                var new_ph = document.createElement("li");
+                var new_wb = document.createElement("li");
+                var new_cm = document.createElement("li");
+                var new_emc = document.createElement("div");
+                var new_adc = document.createElement("div");
+                var new_phc = document.createElement("div");
+                var new_wbc = document.createElement("div");
+                var new_cmc = document.createElement("div");
+                var new_pob = document.createElement("button");
+                var new_phb = document.createElement("button");
+                
+                $(new_sb).addClass("sidebar");
+                $(new_photo).addClass("profile-photo");
+                $(new_name).addClass("name");
+                $(new_username).addClass("username");
+                $(new_fi).addClass("fa-ul");
+                $(new_em).addClass("email");
+                $(new_ad).addClass("address");
+                $(new_ph).addClass("phone");
+                $(new_wb).addClass("web");
+                $(new_cm).addClass("comp");
+                $(new_emc).addClass("info-content");
+                $(new_adc).addClass("info-content");
+                $(new_phc).addClass("info-content");
+                $(new_wbc).addClass("info-content");
+                $(new_cmc).addClass("info-content");
+                $(new_pob).addClass("view-posts");
+                $(new_phb).addClass("view-photos");
+                
+                new_photo.src = "fd0c559856ca991e9e28937dc802f0b0.jpg";
+                $(new_name).text(user.name);
+                $(new_username).text("@"+ user.username);
+                $(new_emc).text(user.email);
+                $(new_em).append(new_emc);
+                $(new_fi).append(new_em);
+                
+                $(new_adc).text(user.address.street + ", " + user.address.suite + ", " + user.address.city + " (" + user.address.zipcode + ")");
+                $(new_ad).append(new_adc);
+                $(new_fi).append(new_ad);
+                
+                $(new_phc).text(user.phone);
+                $(new_ph).append(new_phc);
+                $(new_fi).append(new_ph);
+                $(new_wbc).text(user.website);
+                $(new_wb).append(new_wbc);
+                $(new_fi).append(new_wb);
+                
+                $(new_cmc).text(user.company.name + " (" + user.company.bs + ")" + " - " + user.company.catchPhrase);
+                $(new_cm).append(new_cmc);
+                $(new_fi).append(new_cm);
+                
+                $(new_pob).text("ALL POSTS");
+                $(new_phb).text("ALL PHOTOS");
+                
+                $(new_sb).append(new_photo);
+                $(new_sb).append(new_name);
+                $(new_sb).append(new_username);
+                $(new_sb).append(new_fi);
+                $(new_sb).append(new_pob);
+                $(new_sb).append(new_phb);
+                
+                $(".sidebar-container").append(new_sb);
+            }
+            
+            $(document).ready();
         </script>
     </head>
     
@@ -251,18 +393,7 @@
         </div>
         
         <div class="sidebar-container">
-            <div class="sidebar">
-                <img src="fd0c559856ca991e9e28937dc802f0b0.jpg" class="profile-photo"></img>
-                <div class="name">Cupcake Dog</div>
-                <div class="username">@kupkeykd</div>
-                <ul class="fa-ul">
-                    <li class="email"><div class="info-content">dogs4lyf@doogle.com</div></li>
-                    <li class="address"><div class="info-content">#45 Paws St., New Bark City</div></li>
-                    <li class="phone"><div class="info-content">09167263345</div></li>
-                    <li class="web"><div class="info-content">twitter.com/dogs4lyf</div></li>
-                    <li class="comp"><div class="info-content">Barkin' Blends</div></li>
-                </ul>
-            </div>
+        
         </div>
         
     
