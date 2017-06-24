@@ -1,0 +1,335 @@
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Montserrat|Montserrat+Alternates:600" rel="stylesheet">
+        
+        <script src = "jquery-3.2.1.js"></script>
+        
+        <title>Hello</title>
+        
+        <style>
+            body{
+                padding:0;
+                margin:0;
+                margin-top:170px;
+                background-color:#dbdbdb;
+            }
+            
+            /* header */
+            .header{
+                position:fixed;
+                display:flex;
+                top:0px;
+                flex-direction:column;
+                width:100%;
+                height:120px;
+                background-image:url("bg-index2.jpg");
+                background-position: -1000px -0x;
+            }
+            .header-buttons{
+                display:flex;
+                margin:auto;
+                align-content:center;
+                justify-content:center;
+            }
+            #header-logo p{
+                padding:0;
+                color:#f0f0f0;
+                margin-top:15px;
+                text-align:center;
+                font-size-adjust:auto;
+                font-size:220%;
+                font-family: 'Montserrat Alternates', sans-serif;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #header-logo p:hover{
+                color:#557c83;
+                text-shadow:2px 2px #f0f0f0; 
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #home-button{
+                width:35px;
+                height:29px;
+                margin-top:-40px;
+                margin-right:20px;
+                background-image:url("spritesheet.png");
+                background-position:-35px 0px;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #home-button:hover{
+                opacity:0.5;
+                filter:drop-shadow(2px 2px #557c83);
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #album-button{
+                width:38px;
+                height:29px;
+                margin-top:-40px;
+                margin-right:20px;
+                background-image:url("spritesheet.png");
+                background-position:0px 0px;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #album-button:hover{
+                opacity:0.5;
+                filter:drop-shadow(2px 2px #557c83);
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #users-button{
+                width:38px;
+                height:29px;
+                margin-top:-40px;
+                background-image:url("spritesheet.png");
+                background-position:-67px 0px;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #users-button:hover{
+                opacity:0.5;
+                filter:drop-shadow(2px 2px #557c83);
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            
+            /* posts container */
+            .post-item-container{
+                margin-top:50px;
+                margin-left:auto;
+                margin-right:auto;
+                margin-bottom:50px;
+                width:600px;
+                height:auto;
+                min-height:15%;
+                overflow:auto;
+                background-color:#ffffff;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            .post-item-container:hover{
+                background-color:#f0f0f0;
+                box-shadow:0px 20px #557c83;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            .img{
+                float:left;
+                border-radius:100%;
+                padding:4%;
+                width:auto;
+                height:auto;
+                max-height:80px;
+                max-width:80px;
+            }
+            .username-post{
+                float:left;
+                padding-top:8%;
+                text-align:center;
+                color:#557c83;
+                font-size:140%;
+                font-family:'Montserrat', sans-serif;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            .username-post:hover{
+                opacity:0.5;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            .username2-post{
+                float:right;
+                padding-top:9%;
+                margin-right:5%;
+                color:#969696;
+                font-size:100%;
+                font-family:'Montserrat', sans-serif;
+                font-style:italic;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            .username2-post:hover{
+                opacity:0.5;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            .line{
+                margin-top:-40;
+                float:right;
+                width:79%;
+                height:6px;
+                background-color:#557c83;
+            }
+            .post-title{
+                margin-left:3%;
+                margin-right:3%;
+                text-align:center;
+                padding-top:22%;
+                padding-bottom:3%;
+                color:#969696;
+                font-size:140%;
+                font-family:'Montserrat', sans-serif;
+                font-style:italic;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            .post-content{
+                float:left;
+                margin-top:5px;
+                margin-bottom:30px;
+                padding-left:5%;
+                padding-right:5%;
+                text-align:left;
+                color:#000000;
+                font-size:100%;
+                font-family:'Montserrat', sans-serif;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            
+            /* footer */
+            .footer{
+                width:100%;
+                margin-top:50px;
+                margin-bottom:50px;
+                text-align:center;
+            }
+            #view-button{
+                width:10%;
+                height:7%;
+                background-color:#557c83;
+                color:#f0f0f0;
+                border:none;
+                font-family:'Montserrat', sans-serif;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #view-button:hover{
+                opacity:0.5;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+        </style>
+            
+        <script>
+            //array of users
+            var users = [];
+            
+            //constructor for profile
+            var Profile = function(id, name, username, email, address, phone, website, company){
+                this.id = id;
+                this.name = name;
+                this.username = username;
+                this.email = email;
+                this.address = address;
+                this.phone = phone;
+                this.website = website;
+                this.company = company;
+            }
+            
+            
+            
+            function getPosts(x){
+            $.ajax({
+                url: "https://jsonplaceholder.typicode.com/posts",
+                type: "GET",
+                success: function(data){
+                    for(var i=data.length-x+10; i>data.length-x; i--){
+                        var new_photo = document.createElement("img");
+                        var new_pic = document.createElement("div");
+                        var new_pi = document.createElement("div");
+                        var new_name = document.createElement("div");
+                        var new_username = document.createElement("div");
+                        var new_pc = document.createElement("div");
+                        var new_title = document.createElement("div");
+                        var new_line = document.createElement("div");
+                        
+                        $(new_pic).addClass("post-item-container");
+                        $(new_pi).addClass("post-item");
+                        $(new_pc).addClass("post-content");
+                        $(new_name).addClass("username-post");
+                        $(new_username).addClass("username2-post");
+                        $(new_title).addClass("post-title");
+                        $(new_photo).addClass("img");
+                        $(new_line).addClass("line");
+                        
+                        var user_index = data[i-1].userId - 1;
+                    
+                        $(new_name).text(users[user_index].name);
+                        $(new_username).text("@" + users[user_index].username);
+                        $(new_title).text(data[i-1].title)
+                        $(new_pc).text(data[i-1].body);
+                        
+                        new_photo.src = "fd0c559856ca991e9e28937dc802f0b0.jpg";
+                        
+                        $(new_pi).append(new_photo);
+                        $(new_pi).append(new_name);
+                        $(new_pi).append(new_username);
+                        $(new_pi).append(new_line);
+                        $(new_pi).append(new_title);
+                        $(new_pi).append(new_pc);
+                        $(new_pic).append(new_pi);
+                        
+                        $("#posts-container").append(new_pic);
+                        
+                        console.log(x);   
+                    }
+                }
+            });
+        }
+            
+        function getUsers(){
+            $.ajax({
+                url: "https://jsonplaceholder.typicode.com/users",
+                type: "GET",
+                success: function(data){
+                    for(i=0; i<data.length; i++){
+                        var user = new Profile(data[i].id, data[i].name,
+                                               data[i].username, data[i].email,
+                                               data[i].address, data[i].phone,
+                                               data[i].website, data[i].company);
+                        users.push(user);
+                    }
+                }
+            });
+        }
+            
+        //when document is ready
+        $(document).ready(function(){
+           
+            //for posts
+            var x = 10;
+            getUsers();
+            getPosts(x);
+            
+            $("#view-button").click(function(){
+                x +=10;
+                console.log("Clicked!");
+                getPosts(x);
+            });
+        });
+        </script>
+    </head>
+    
+    <body>
+        <div class="header">
+            <div id="header-logo">
+                <p>placeholder</p>
+            </div>
+            <div class="header-buttons">
+                <a href="home-page.html"><div id="home-button"></div></a>
+                <a href="all-photos-page.html"><div id="album-button"></div></a>
+                <div id="users-button"></div>
+            </div>
+        </div>
+        
+        <div id="posts-container"></div>
+        
+        <div class="footer">
+            <button id="view-button">VIEW MORE</button>
+        </div>
+    </body>
+</html>
