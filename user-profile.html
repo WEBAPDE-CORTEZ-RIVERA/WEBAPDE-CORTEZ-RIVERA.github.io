@@ -292,7 +292,7 @@
                 var name = decodeURI(data.name);
                 name = name.replace(/@/g, '');
                 
-                console.log(name);
+                document.title = name;
                 
                 initializeProfile(name);
                 
