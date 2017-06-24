@@ -99,35 +99,55 @@
                 filter:drop-shadow(2px 2px #557c83);
                 transition-duration:0.5s;
                 transition-timing-function:ease;
+            }            
+            .wrapper{
+                width:1000px;
+                margin:0 auto;
             }
             
-            /* content 
+            /* content */
             .posts-container{
-                position:relative;
-                display:inline-block;
+                margin-top:50px;
                 float:right;
-                margin-right:0;
-                width:65%;
-                height:80%;
+                width:600px;
+            }
+            .post-item-container{
+                width:600px;
+                margin-left:auto;
+                margin-right:auto;
+                margin-bottom:50px;
+                height:auto;
+                min-height:15%;
                 overflow:auto;
                 background-color:#ffffff;
-            }*/
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            .title{
+                margin-left:20px;
+                margin-right:20px; 
+                margin-top:20px;
+                margin-bottom:5px;
+                color:#557c83;
+                font-size:150%;
+                font-style:italic;
+                font-family:'Montserrat', sans-serif;
+            }
+            .content{
+                margin-left:20px;
+                margin-right:20px;
+                margin-bottom:20px;
+                color:#000000;
+                font-size:90%;
+                font-family:'Montserrat', sans-serif;
+            }
             
-            /* profile sidebar 
-            .sidebar-container{
-                padding:0;
-                float:left;
-                width:35%;
-                height:0%;
-                overflow:auto;
-                background-color:#dbdbdb;
-            }*/
+            /* sidebar */
             .sidebar{
-                position:absolute;
+                float:left;
+                margin-top:30px;
                 display:flex;
                 flex-direction:column;
-                top:150px;
-                left:150px;
                 width: 300px;
                 height:auto;
                 min-height:40%;
@@ -136,7 +156,6 @@
                 overflow:auto;
             }
             .profile-photo{
-                position:relative;
                 margin-left:auto;
                 margin-right:auto;
                 margin-top:30px;
@@ -147,15 +166,18 @@
                 width:90px;
             }
             .name{
-                position:relative;
                 margin-left:auto;
                 margin-right:auto;
                 color:#557c83;
                 font-size:140%;
                 font-family:'Montserrat', sans-serif;
             }
+            .name:hover{
+                opacity:0.5;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
             .username{
-                position:relative;
                 margin-left:auto;
                 margin-right:auto;
                 margin-bottom:10px;
@@ -201,8 +223,7 @@
             }
             .info-content{
                 text-align:left;
-                position:relative;
-                margin-bottom:10px;
+                margin-bottom:5px;
                 margin-left:auto;
                 margin-right:10px;
                 text-align:left;
@@ -222,6 +243,9 @@
                 font-family:'Montserrat', sans-serif;
                 transition-duration:0.5s;
                 transition-timing-function:ease;
+            }
+            .view-photos{
+                margin-bottom:20px;
             }
             .view-posts:hover, .view-photos:hover{
                 opacity:0.5;
@@ -253,8 +277,10 @@
         
         <script>
             var user;
+            var posts = [];
+            var x = 5;
             
-            window.onload = function () {
+            window.onload = function() {
                 var url = document.location.href,
                 params = url.split('?')[1].split('&'),
                 data = {}, tmp;
@@ -269,6 +295,7 @@
                 console.log(name);
                 
                 initializeProfile(name);
+                
             }
             
             var Profile = function(id, name, username, email, address, phone, website, company){
@@ -280,6 +307,13 @@
                 this.phone = phone;
                 this.website = website;
                 this.company = company;
+            }
+            
+            var Post = function(id, userID, title, content){
+                this.id = id;
+                this.userID = userID;
+                this.title = title;
+                this.content = content;
             }
             
             function initializeProfile(name){
@@ -297,6 +331,7 @@
                                 console.log(user);
                                 
                                 createSideBar();
+                                getPosts();
                             }
                         }
                             
@@ -363,8 +398,8 @@
                 $(new_cm).append(new_cmc);
                 $(new_fi).append(new_cm);
                 
-                $(new_pob).text("ALL POSTS");
-                $(new_phb).text("ALL PHOTOS");
+                $(new_pob).text("VIEW ALL POSTS");
+                $(new_phb).text("VIEW ALL PHOTOS");
                 
                 $(new_sb).append(new_photo);
                 $(new_sb).append(new_name);
@@ -376,7 +411,79 @@
                 $(".sidebar-container").append(new_sb);
             }
             
-            $(document).ready();
+            function getPosts(){
+                $.ajax({
+                    url: "https://jsonplaceholder.typicode.com/posts",
+                    type: "GET",
+                    success: function(data){
+                        for(var i=0; i<data.length; i++){
+                            if(data[i].userId == user.id){
+                                var post = new Post(data[i].id, data[i-1].userId, data[i].title, data[i].body);
+                                
+                                posts.push(post); 
+                                
+                                console.log(post);
+                            }
+                        }
+                        assemblePIC(x); 
+                    }
+                });
+            }
+            
+            function assemblePIC(x){
+                for(var i=posts.length-x+5; i>posts.length-x; i--){
+                    var new_pic = document.createElement("div");
+                    var new_title = document.createElement("div");
+                    var new_content = document.createElement("div");
+                    
+                    $(new_pic).addClass("post-item-container");
+                    $(new_title).addClass("title");
+                    $(new_content).addClass("content");
+                    
+                    $(new_title).text(posts[i-1].title);
+                    $(new_content).text(posts[i-1].content);
+                    
+                    $(new_pic).append(new_title);
+                    $(new_pic).append(new_content);
+                    
+                    $(".posts-container").append(new_pic);
+                }
+            }
+            
+            function viewAllPosts(){
+                for(var i=posts.length; i>0; i--){
+                    var new_pic = document.createElement("div");
+                    var new_title = document.createElement("div");
+                    var new_content = document.createElement("div");
+                    
+                    $(new_pic).addClass("post-item-container");
+                    $(new_title).addClass("title");
+                    $(new_content).addClass("content");
+                    
+                    $(new_title).text(posts[i-1].title);
+                    $(new_content).text(posts[i-1].content);
+                    
+                    $(new_pic).append(new_title);
+                    $(new_pic).append(new_content);
+                    
+                    $(".posts-container").append(new_pic);
+                }
+            }
+            
+            $(document).ready(function(){
+                var x = 5;
+                
+                $(".sidebar-container").on('click', ".view-posts", function(){
+                    $(".posts-container").empty();
+                    viewAllPosts();
+                    x = 5;
+                });
+                
+                $(".sidebar-container").on('click', ".name", function(){
+                    $(".posts-container").empty();
+                    getPosts();
+                });
+            });
         </script>
     </head>
     
@@ -392,12 +499,14 @@
             </div>
         </div>
         
-        <div class="sidebar-container">
-        
-        </div>
-        
-    
-        <div class="posts-container">
+        <div class="wrapper">
+            <div class="sidebar-container">
+         
+            </div>
+         
+            <div class="posts-container">
+            </div>
+            
             <div class="footer">
                 <button id="view-button">VIEW MORE</button>
             </div>
