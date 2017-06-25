@@ -1,3 +1,349 @@
 <html>
-
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Montserrat+Alternates:600" rel="stylesheet">
+    
+    <script src = "jquery-3.2.1.js"></script>
+    
+    <style>
+        body{
+            padding:0;
+            margin:0;
+            margin-top:120px;
+            background-color:#dbdbdb;
+            height:100%;
+            justify-content:center;
+        }
+        
+        /* header */
+        .header{
+            position:fixed;
+            display:flex;
+            top:0px;
+            flex-direction:column;
+            width:100%;
+            height:120px;
+            margin-bottom:50px;
+            background-image:url("bg-index2.jpg");
+            background-position: -1000px -0x;
+        }
+        .header-buttons{
+            display:flex;
+            margin:auto;
+            align-content:center;
+            justify-content:center;
+        }
+        #header-logo p{
+            padding:0;
+            color:#f0f0f0;
+            margin-top:15px;
+            text-align:center;
+            font-size-adjust:auto;
+            font-size:220%;
+            font-family: 'Montserrat Alternates', sans-serif;
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        #header-logo p:hover{
+            color:#557c83;
+            text-shadow:2px 2px #f0f0f0; 
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        #home-button{
+            width:35px;
+            height:29px;
+            margin-top:-40px;
+            margin-right:20px;
+            background-image:url("spritesheet.png");
+            background-position:-35px 0px;
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        #home-button:hover{
+            opacity:0.5;
+            filter:drop-shadow(2px 2px #557c83);
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        #album-button{
+            width:38px;
+            height:29px;
+            margin-top:-40px;
+            margin-right:20px;
+            background-image:url("spritesheet.png");
+            background-position:0px 0px;
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        #album-button:hover{
+            opacity:0.5;
+            filter:drop-shadow(2px 2px #557c83);
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        #users-button{
+            width:38px;
+            height:29px;
+            margin-top:-40px;
+            background-image:url("spritesheet.png");
+            background-position:-67px 0px;
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        #users-button:hover{
+            opacity:0.5;
+            filter:drop-shadow(2px 2px #557c83);
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        
+        .title-name{
+            padding:50px; 
+        }
+        .album-title, .user-title{
+            text-align:center;
+            font-size:230%;
+            font-family:'Montserrat', sans-serif;
+            color:#557c83;
+        }
+        .user-title{
+            font-size:100%;
+            color:#000000;
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        .user-title:hover{
+            opacity:0.5;
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        
+        /* photos */
+        #photos-container{
+            display:inline-block;
+            width:100%;
+            text-align:center;
+        }
+        .photo-item-container{
+            width:auto;
+            height:auto;
+            padding:2%;
+            margin:2%;
+            display: inline-block;
+            background-color:#ffffff;
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        .photo-item-container:hover{
+            background-color:#f0f0f0;
+            box-shadow:0px 20px #557c83;
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        .img{
+            display:inline-block;
+            width:100%;
+            height:auto;
+        }   
+        
+        /* footer */
+        .footer{
+            width:100%;
+            text-align:center;
+            align-content:flex-end;
+        }
+        #view-button{
+            margin-bottom:50px;
+            width:20%;
+            height:7%;
+            background-color:#557c83;
+            color:#f0f0f0;
+            border:none;
+            font-family:'Montserrat', sans-serif;
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        #scrollUp{
+            width:7%;
+            height:7%;
+            background-color:#f0f0f0;
+            border:none;
+            color:#557c83;
+            font-family:'Montserrat', sans-serif;
+            font-size:150%;
+            position: fixed; 
+            bottom: 20px;
+            right: 30px; 
+            z-index: 99; 
+        }
+        #view-button:hover, #scrollUp:hover{
+            opacity:0.5;
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+    </style>
+    
+    <script>
+        var photos = [];
+        var user;
+        var album;
+        var x = 10;
+        
+        var Album = function(id, userID, title){
+            this.id = id;
+            this.userID = userID;
+            this.title = title;
+            this.photos = [];
+        }
+        
+        var Photo = function(albumId, id, title, url, thumbnailUrl){
+            this.albumId = albumId;
+            this.id = id;
+            this.title = title;
+            this.url = url;
+            this.thumbnailUrl = thumbnailUrl;
+        }
+        
+        window.onload = function() {
+            var url = document.location.href,
+            params = url.split('?')[1].split('&'),
+            data = {}, tmp;
+            for (var i = 0, l = params.length; i < l; i++) {
+                tmp = params[i].split('=');
+                data[tmp[0]] = tmp[1];
+            }
+            
+            var name = decodeURI(data.name);
+            name = name.replace(/@/g, '');
+            
+            params = name.split("<ur>");
+            
+            document.getElementById("scrollUp").style.display = "none";
+            
+            user = params[1];
+            initializeAlbum(params[0]);
+        }
+        
+        window.onscroll = function(){
+            if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 20) {
+                document.getElementById("scrollUp").style.display = "block";
+            } else {
+                document.getElementById("scrollUp").style.display = "none";
+            }
+        };
+        
+        function topFunction() {
+            document.body.scrollTop = 0; // For Chrome, Safari and Opera 
+            document.documentElement.scrollTop = 0; // For IE and Firefox
+        }
+        
+        function initializeAlbum(name){
+            $.ajax({
+                url: "https://jsonplaceholder.typicode.com/albums",
+                type: "GET",
+                success: function(data){
+                    for(i=0; i<data.length; i++){
+                        if((data[i].title).localeCompare(name) == 0){
+                            album = new Album(data[i].id, data[i].userId,
+                                               data[i].title);
+                            console.log(album);
+                        }
+                    }
+                    document.title = album.title;
+                    console.log(album.title);
+                    dispTitle();
+                }
+            });
+        }
+        
+        function dispTitle(){
+            new_title = document.createElement("div");
+            new_user = document.createElement("div");
+            
+            $(new_title).addClass("album-title");
+            $(new_user).addClass("user-title");
+            
+            $(new_title).text(album.title);
+            $(new_user).text(user);
+            
+            $(".title-name").append(new_title);
+            $(".title-name").append(new_user);
+            
+            storePhotos();
+        }
+        
+        function storePhotos(){
+            $.ajax({
+                url: "https://jsonplaceholder.typicode.com/photos",
+                type: "GET",
+                success: function(data){
+                    for(var i=0; i<data.length; i++){
+                        if(data[i].albumId == album.id){
+                            var photo = new Photo(data[i].albumId, data[i-1].id, data[i].title, data[i].url, data[i].thumbnailUrl);
+                            
+                            photos.push(photo);
+                        }
+                    }
+                    
+                    dispPhotos(x);
+                }
+            });
+        }
+        
+        function dispPhotos(x){
+            for(var i=photos.length-x+10; i>photos.length-x;i--){
+                var new_photo = document.createElement("img");
+                var new_pic = document.createElement("div");
+              
+                $(new_photo).addClass("img");
+                $(new_pic).addClass("photo-item-container");
+                  
+                new_photo.src = photos[i-1].thumbnailUrl + "";
+                console.log(photos[i-1]);
+                  
+                $(new_pic).append(new_photo);
+                  
+                $("#photos-container").append(new_pic);
+            }
+        }
+        
+        $(document).ready(function(){
+           $("#view-button").click(function(){
+                x += 10;
+                dispPhotos(x);
+            }); 
+            
+            $("#scrollUp").click(function(){
+                topFunction();
+            });
+            
+            $(".title-name").on('click', ".user-title", function(){
+                var name_temp = $(this).text();
+                var url = 'user-profile.html?name=' + name_temp;
+                
+                document.location.href = url;
+            });
+        });
+        
+    </script>
+    
+    <body>
+        <div class="header">
+            <div id="header-logo">
+                <p>placeholder</p>
+            </div>
+            <div class="header-buttons">
+                <a href="index.html"><div id="home-button"></div></a>
+                <a href="all-photos-page.html"><div id="album-button"></div></a>
+                <div id="users-button"></div>
+            </div>
+        </div>
+        
+        <div class="title-name"></div>
+        <div id="photos-container"></div>
+            
+        <div class="footer">
+            <button id="view-button">VIEW MORE</button>
+            <button id="scrollUp">^</button>
+        </div>
+    </body>
 </html>
