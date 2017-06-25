@@ -141,7 +141,20 @@
                 transition-duration:0.5s;
                 transition-timing-function:ease;
             }
-            #view-button:hover{
+            #scrollUp{
+                width:7%;
+                height:7%;
+                background-color:#f0f0f0;
+                border:none;
+                color:#557c83;
+                font-family:'Montserrat', sans-serif;
+                font-size:150%;
+                position: fixed; /* Fixed/sticky position */
+                bottom: 20px; /* Place the button at the bottom of the page */
+                right: 30px; /* Place the button 30px from the right */
+                z-index: 99; /* Make sure it does not overlap */
+            }
+            #view-button:hover, #scrollUp:hover{
                 opacity:0.5;
                 transition-duration:0.5s;
                 transition-timing-function:ease;
@@ -149,6 +162,19 @@
         </style>
         
         <script>
+            window.onscroll = function(){
+                if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 20) {
+                    document.getElementById("scrollUp").style.display = "block";
+                } else {
+                    document.getElementById("scrollUp").style.display = "none";
+                }
+            };
+            
+            function topFunction() {
+                document.body.scrollTop = 0; // For Chrome, Safari and Opera 
+                document.documentElement.scrollTop = 0; // For IE and Firefox
+            }
+            
             // function to get pics 15 pics at a time
             function getPics(index){
                  $.ajax({
@@ -177,6 +203,8 @@
             
             //when document is ready
             $(document).ready(function(){
+                document.getElementById("scrollUp").style.display = "none";
+                
                 //for pics
                 var index = 0;
                 getPics(index);
@@ -187,6 +215,10 @@
                     index +=15;
                     console.log("Clicked!");
                     getPics(index);
+                });
+                
+                $("#scrollUp").click(function(){
+                    topFunction();
                 });
                 
                 //for albums
@@ -212,6 +244,7 @@
         
         <div class="footer">
             <button id="view-button">VIEW MORE</button>
+            <button id="scrollUp">^</button>
         </div>
     </body>
 </html>
