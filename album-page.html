@@ -227,7 +227,7 @@
                 type: "GET",
                 success: function(data){
                     for(i=0; i<data.length; i++){
-                        if((data[i].title).localeCompare(name) == 0){
+                        if((data[i].title).localeCompare(name) == 0) || name == data[i].id{
                             album = new Album(data[i].id, data[i].userId,
                                                data[i].title);
                             console.log(album);
