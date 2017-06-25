@@ -1,0 +1,142 @@
+<html>
+    <head>
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
+    </head>
+    
+    <body>
+        
+        <div id="pic"></div >
+        <p id="photoTitle"></p>
+        <p id="albumTitle"></p>
+        <p id="user_name"></p>
+        
+        <script>
+             var localbumid="";
+             var userid="";
+             var userpangalan="";
+           
+            
+            function showPhoto(given){
+             
+              
+                $.ajax({
+                url: "https://jsonplaceholder.typicode.com/photos",
+                type: "GET",
+                success: function(data){
+                    for(var orig=0; orig<data.length; orig++){
+                        if(given == data[orig].id){
+                            console.log("picture");
+                            document.getElementById("pic").innerHTML = "<img src='" + data[orig].url + "'/>";
+                            document.getElementById("photoTitle").innerHTML += data[orig].title ;
+                            
+                        }
+                    }
+                }
+                });
+            }
+          
+          
+            
+            function showUserName(given){
+             
+               $.ajax({
+                url: "https://jsonplaceholder.typicode.com/photos",
+                type: "GET",
+                success: function(data){
+                    console.log("FIRST");
+                    for(var orig=0; orig<data.length; orig++){
+                        if(given == data[orig].id){
+                            console.log("photo to album okay");
+                            localbumid = data[orig].albumId;
+                            console.log(localbumid);
+                            
+                            
+                               
+                        }
+                    }
+                   //this ajax has the album title
+                    $.ajax({
+                                    url: "https://jsonplaceholder.typicode.com/albums",
+                                    type: "GET",
+                                    success: function(data){
+                                       
+                                        console.log("SECOND");
+                                        for(var orig=0; orig<data.length; orig++){
+                                            if(localbumid == data[orig].id){
+                                                console.log("album to user okay");
+                                                userid = data[orig].userId;
+                                                console.log("");
+                                                console.log(userid);
+                                                document.getElementById("albumTitle").innerHTML = "<a href='showAlbum.html?id='" + data[orig].id + "'>" + data[orig].title + "</a>";
+                                                
+                                                
+                                            }
+                                        }
+                    //this ajax has the user's name and username
+                                      $.ajax({
+                                    url: "https://jsonplaceholder.typicode.com/users",
+                                    type: "GET",
+                                    success: function(data){
+                                       
+                                        console.log("THIRD");
+                                        for(var orig=0; orig<data.length; orig++){
+                                            if(userid == data[orig].id){
+                                                console.log("user to name okay");
+                                                userpangalan = data[orig].name;
+                                                document.getElementById("pic").innerHTML += "<a href='user-profile.html?id=" + userid + "'><b>" + data[orig].name + "</b>" + data[orig].username + "</a>";
+                                            }
+                                        }
+ 
+                                        
+                                    }
+                                });  
+                                    }
+                                });
+                    
+                    
+                            
+                }
+                });
+               
+            }  
+            
+              
+            
+			// NEW FUNCTION
+			// Basicall if you have link.html?var=n
+			// GetURLParameter(var) will return n
+			function GetURLParameter(sParam)
+{
+			var sPageURL = window.location.search.substring(1);
+			var sURLVariables = sPageURL.split('&');
+			for (var i = 0; i < sURLVariables.length; i++) 
+			{
+				var sParameterName = sURLVariables[i].split('=');
+				if (sParameterName[0] == sParam) 
+			{
+				return sParameterName[1];
+        }
+    }
+}
+			
+            
+            $(document).ready(function(){
+               
+				
+              
+			   var tempID = GetURLParameter('id');
+				
+                showPhoto(tempID);
+				showUserName(tempID);
+               
+            });
+        </script>
+        
+    </body>
+ 
+</html>
+ 
+ 
+ 
+ 
