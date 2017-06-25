@@ -84,22 +84,7 @@
                 filter:drop-shadow(2px 2px #557c83);
                 transition-duration:0.5s;
                 transition-timing-function:ease;
-            }
-            #users-button{
-                width:38px;
-                height:29px;
-                margin-top:-40px;
-                background-image:url("spritesheet.png");
-                background-position:-67px 0px;
-                transition-duration:0.5s;
-                transition-timing-function:ease;
-            }
-            #users-button:hover{
-                opacity:0.5;
-                filter:drop-shadow(2px 2px #557c83);
-                transition-duration:0.5s;
-                transition-timing-function:ease;
-            }            
+            }     
             .wrapper{
                 width:1000px;
                 margin:0 auto;
@@ -138,6 +123,11 @@
                 transition-duration:0.5s;
                 transition-timing-function:ease;
             }
+            .album-title{
+                background-color:#557c83;
+                color:#f0f0f0;
+                padding:5px;
+            }
             .album-title:hover{
                 opacity:0.5;
                 transition-duration:0.5s;
@@ -175,20 +165,6 @@
             }
             .photo-item{
                 display:inline-block;
-            }
-            .view-alb{
-                width:560px;
-                height:auto;
-                margin-left:20px;
-                margin-right:20px;
-                margin-bottom:20px;
-                background-color:#dbdbdb;
-                color:#557c83;
-                border:none;
-                font-size:150%;
-                font-family: "FontAwesome";
-                content:"\f141";
-                transition-timing-function:ease;
             }
             
             /* sidebar */
@@ -428,10 +404,11 @@
                                 
                                 createSideBar();
                                 getPosts();
+                                
+                                document.title = user.name;
+                                break;
                             }
-                        
-                        document.title = user.name;
-                    }
+                        }
                     }
                 });
             }
@@ -591,25 +568,18 @@
                 
             }
             
-            
-            
             function assembleAIC(x){
                 for(var i=albums.length-x+5; i>albums.length-x; i--){
                     var new_pic = document.createElement("div");
                     var new_title = document.createElement("div");
                     var new_phic = document.createElement("div");
-                    var new_button = document.createElement("button");
                     
                     $(new_pic).addClass("post-item-container");
                     $(new_title).addClass("album-title");
-                    $(new_button).addClass("view-alb");
-                    
                     
                     $(new_title).text(albums[i-1].title);
-                    $(new_button).text("+");
                     $(new_pic).append(new_title);
                     
-                   
                     if(albums[i-1].length <= 3 && albums[i-1].length > 0){
                         var new_ab = document.createElement("div");
                         $(new_ab).addClass("album-photos");
@@ -641,6 +611,7 @@
                             var new_phic = document.createElement("div");
                             var new_photo = document.createElement("img");
                             
+                            
                             $(new_phic).addClass("photo-item-container");
                             $(new_photo).addClass("photo-item");
                             
@@ -655,7 +626,6 @@
                     }
                     
                     $(new_pic).append(new_phic);
-                    $(new_pic).append(new_button);
                     
                     $(".posts-container").append(new_pic);
                 }
@@ -686,29 +656,30 @@
                     var new_pic = document.createElement("div");
                     var new_title = document.createElement("div");
                     var new_phic = document.createElement("div");
-                    var new_button = document.createElement("button");
                     
                     $(new_pic).addClass("post-item-container");
                     $(new_title).addClass("album-title");
-                    $(new_button).addClass("view-alb");
                     
                     $(new_title).text(albums[i-1].title);
-                    $(new_button).text("+");
                     $(new_pic).append(new_title);
                     
                     if(albums[i-1].length <= 3 && albums[i-1].length > 0){
                         var new_ab = document.createElement("div");
                         $(new_ab).addClass("album-photos");
                         for(var j=0; j<(albums[i-1].photos).length; j++){
+                            var indivLink = document.createElement("a");
                             var new_phic = document.createElement("div");
                             var new_photo = document.createElement("img");
+                            
                             
                             $(new_phic).addClass("photo-item-container");
                             $(new_photo).addClass("photo-item");
                             
                             new_photo.src = albums[i-1].photos[j].thumbnailUrl + "";
+                            indivLink.setAttribute('href', 'showIndivPhoto.html?id=' + albums[i-1].photos[j].id);
                             
-                            $(new_phic).append(new_photo);
+                            $(indivLink).append(new_photo);
+                            $(new_phic).append(indivLink);
                             $(new_ab).append(new_phic);
                         }
                         
@@ -719,24 +690,35 @@
                         var new_ab = document.createElement("div");
                         $(new_ab).addClass("album-photos");
                         for(var j=0; j<6; j++){
+                            var indivLink = document.createElement("a");
                             var new_phic = document.createElement("div");
                             var new_photo = document.createElement("img");
+                            
                             
                             $(new_phic).addClass("photo-item-container");
                             $(new_photo).addClass("photo-item");
                             
                             new_photo.src = albums[i-1].photos[j].thumbnailUrl + "";
+                            indivLink.setAttribute('href', 'showIndivPhoto.html?id=' + albums[i-1].photos[j].id);
                             
-                            (new_phic).append(new_photo);
+                            $(indivLink).append(new_photo);
+                            $(new_phic).append(indivLink);
                             $(new_ab).append(new_phic);
                         }    
                         $(new_pic).append(new_ab);
                     }
                     
                     $(new_pic).append(new_phic);
-                    $(new_pic).append(new_button);
                     
                     $(".posts-container").append(new_pic);
+                }
+            }
+            
+            function getAlbumId(album_name){
+                for(var i=0; i<albums.length; i++){
+                    if((albums[i].title).localeCompare(album_name) == 0){
+                        return albums[i].id;
+                    }
                 }
             }
             
@@ -758,23 +740,27 @@
             $(document).ready(function(){
                 
                 var tempID = GetURLParameter('id');
+                console.log(tempID);
 			    initializeProfile(tempID);
             
                 
                 $(".sidebar-container").on('click', ".view-posts", function(){
                     $(".posts-container").empty();
+                    $("#view-button").hide();
                     viewAllPosts();
                     x = 5;
                 });
                 
                 $(".sidebar-container").on('click', ".view-photos", function(){
                     $(".posts-container").empty();
+                    $("#view-button").hide();
                     viewAllAlbums();
                     x = 5;
                 });
                 
                 $(".sidebar-container").on('click', ".name", function(){
                     $(".posts-container").empty();
+                    $("#view-button").show();
                     x = 5;
                     getPosts();
                 });
@@ -786,6 +772,18 @@
                 
                 $("#scrollUp").click(function(){
                     topFunction();
+                });
+                
+                $(".posts-container").on('click', ".album-title", function(){
+                    var name_temp = $(this).text();
+                    
+                    var alb_name = getAlbumId(name_temp);
+                    
+                    console.log(alb_name);
+                    
+                    var url = "album-page.html?id=" + alb_name;
+                    
+                    document.location.href = url;
                 });
             });
         </script>
@@ -799,7 +797,6 @@
             <div class="header-buttons">
                 <a href="index.html"><div id="home-button"></div></a>
                 <a href="all-photos-page.html"><div id="album-button"></div></a>
-                <div id="users-button"></div>
             </div>
         </div>
         

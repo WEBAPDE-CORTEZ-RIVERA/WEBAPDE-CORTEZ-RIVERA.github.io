@@ -122,11 +122,6 @@
                 transition-duration:0.5s;
                 transition-timing-function:ease;
             }
-            .username-post:hover{
-                opacity:0.5;
-                transition-duration:0.5s;
-                transition-timing-function:ease;
-            }
             .username2-post{
                 float:right;
                 padding-top:9%;
@@ -327,6 +322,14 @@
             });
         }
             
+        function getUserId(username){
+            for(var i=0; i<users.length; i++){
+                if((users[i].username).localeCompare(username) == 0){
+                    return users[i].id; 
+                }
+            }
+        }
+            
         //when document is ready
         $(document).ready(function(){
             document.getElementById("scrollUp").style.display = "none";
@@ -342,16 +345,16 @@
                 getPosts(x);
             });
             
-            $("#posts-container").on('click', ".username-post", function(){
-                var name_temp = $(this).text();
-                var url = 'user-profile.html?name=' + name_temp;
-                
-                document.location.href = url;
-            });
-            
             $("#posts-container").on('click', ".username2-post", function(){
                 var name_temp = $(this).text();
-                var url = 'user-profile.html?name=' + name_temp;
+                name_temp = name_temp.replace(/@/g, "");
+                var user_id = getUserId(name_temp);
+                
+                console.log(user_id);
+                
+                var url = "user-profile.html?id=" + user_id;
+                
+                console.log(url);
                 
                 document.location.href = url;
             });
