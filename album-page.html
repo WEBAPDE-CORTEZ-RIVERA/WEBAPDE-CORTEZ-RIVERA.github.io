@@ -324,6 +324,7 @@
         
         function dispPhotos(x){
             for(var i=photos.length-x+10; i>photos.length-x;i--){
+                var indivLink = document.createElement("a");
                 var new_photo = document.createElement("img");
                 var new_pic = document.createElement("div");
               
@@ -331,9 +332,13 @@
                 $(new_pic).addClass("photo-item-container");
                   
                 new_photo.src = photos[i-1].thumbnailUrl + "";
+                
+                indivLink.setAttribute('href', 'showIndivPhoto.html?id=' + photos[i-1].id);
+                
                 console.log(photos[i-1]);
                   
-                $(new_pic).append(new_photo);
+                $(indivLink).append(new_photo);
+                $(new_pic).append(indivLink);
                   
                 $("#photos-container").append(new_pic);
             }
