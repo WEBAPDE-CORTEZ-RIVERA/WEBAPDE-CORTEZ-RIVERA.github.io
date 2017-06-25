@@ -616,6 +616,7 @@
                             $(new_photo).addClass("photo-item");
                             
                             new_photo.src = albums[i-1].photos[j].thumbnailUrl + "";
+                            
                             indivLink.setAttribute('href', 'showIndivPhoto.html?id=' + albums[i-1].photos[j].id);
                             
                             $(indivLink).append(new_photo);

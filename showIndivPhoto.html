@@ -1,138 +1,278 @@
 <html>
     <head>
+        <link href="https://fonts.googleapis.com/css?family=Montserrat|Montserrat+Alternates:600" rel="stylesheet">
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
-    </head>
-    
-    <body>
         
-        <div id="pic"></div >
-        <p id="photoTitle"></p>
-        <p id="albumTitle"></p>
-        <p id="user_name"></p>
+        <style>
+            body{
+            padding:0;
+            margin:0;
+            margin-top:120px;
+            background-color:#dbdbdb;
+            height:100%;
+            justify-content:center;
+        }
+        
+        /* header */
+        .header{
+            position:fixed;
+            display:flex;
+            top:0px;
+            flex-direction:column;
+            width:100%;
+            height:120px;
+            margin-bottom:50px;
+            background-image:url("bg-index2.jpg");
+            background-position: -1000px -0x;
+        }
+        .header-buttons{
+            display:flex;
+            margin:auto;
+            align-content:center;
+            justify-content:center;
+        }
+        #header-logo p{
+            padding:0;
+            color:#f0f0f0;
+            margin-top:15px;
+            text-align:center;
+            font-size-adjust:auto;
+            font-size:220%;
+            font-family: 'Montserrat Alternates', sans-serif;
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        #header-logo p:hover{
+            color:#557c83;
+            text-shadow:2px 2px #f0f0f0; 
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        #home-button{
+            width:35px;
+            height:29px;
+            margin-top:-40px;
+            margin-right:20px;
+            background-image:url("spritesheet.png");
+            background-position:-35px 0px;
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        #home-button:hover{
+            opacity:0.5;
+            filter:drop-shadow(2px 2px #557c83);
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        #album-button{
+            width:38px;
+            height:29px;
+            margin-top:-40px;
+            margin-right:20px;
+            background-image:url("spritesheet.png");
+            background-position:0px 0px;
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        #album-button:hover{
+            opacity:0.5;
+            filter:drop-shadow(2px 2px #557c83);
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }   
+        
+        .albumTitle, .photoTitle, .user_name{
+            text-align:center;
+            font-size:150%;
+            font-family:'Montserrat', sans-serif;
+            color:#557c83;
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        .user_name{
+            margin-bottom:50px;
+            color:#000000;
+            font-size:100%;
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+        .photoTitle{
+            font-style:italic;
+            padding:20px;
+        }
+        .albumTitle:hover, .user_name:hover{
+            opacity:0.5;
+            transition-duration:0.5s;
+            transition-timing-function:ease;
+        }
+            
+        /* photos */
+        #photos-container, .title-name-head, .title-name-footer{
+            width:100%;
+            text-align:center;
+        }
+        .img{
+            margin-bottom:20px;
+            margin-left:auto;
+            margin-right:auto;
+            width:auto;
+            height:auto;
+        }  
+        </style>
         
         <script>
-             var localbumid="";
-             var userid="";
-             var userpangalan="";
+            var localbumid="";
+            var userid="";
+            var userpangalan="";
+            var alb_title;
+            var photo_title;
+            var username;
+            var alb_id;
            
             
             function showPhoto(given){
-             
-              
                 $.ajax({
-                url: "https://jsonplaceholder.typicode.com/photos",
-                type: "GET",
-                success: function(data){
-                    for(var orig=0; orig<data.length; orig++){
-                        if(given == data[orig].id){
-                            console.log("picture");
-                            document.getElementById("pic").innerHTML = "<img src='" + data[orig].url + "'/>";
-                            document.getElementById("photoTitle").innerHTML += data[orig].title ;
-                            
+                    url: "https://jsonplaceholder.typicode.com/photos",
+                    type: "GET",
+                    success: function(data){
+                        for(var orig=0; orig<data.length; orig++){
+                            if(given == data[orig].id){ 
+                                photo_title = document.createElement("div");
+                                var photo = document.createElement("img");
+                                
+                                $(photo).addClass("img");
+                                $(photo_title).addClass("photoTitle");
+                                
+                                $(photo_title).text(data[orig].title);
+                                                       
+                                photo.src = data[orig].url + "";
+                                
+                                $(".title-name-head").append(photo_title);
+                                $("#photos-container").append(photo);
+                            }
                         }
                     }
-                }
                 });
             }
           
           
             
             function showUserName(given){
-             
                $.ajax({
-                url: "https://jsonplaceholder.typicode.com/photos",
-                type: "GET",
-                success: function(data){
-                    console.log("FIRST");
-                    for(var orig=0; orig<data.length; orig++){
-                        if(given == data[orig].id){
-                            console.log("photo to album okay");
-                            localbumid = data[orig].albumId;
-                            console.log(localbumid);
-                            
-                            
-                               
+                   url: "https://jsonplaceholder.typicode.com/photos",
+                   type: "GET",
+                   success: function(data){
+                        for(var orig=0; orig<data.length; orig++){
+                            if(given == data[orig].id){
+                                localbumid = data[orig].albumId;
+                                console.log(localbumid);
+                            }
                         }
-                    }
-                   //this ajax has the album title
-                    $.ajax({
-                                    url: "https://jsonplaceholder.typicode.com/albums",
-                                    type: "GET",
-                                    success: function(data){
-                                       
-                                        console.log("SECOND");
-                                        for(var orig=0; orig<data.length; orig++){
-                                            if(localbumid == data[orig].id){
-                                                console.log("album to user okay");
-                                                userid = data[orig].userId;
-                                                console.log("");
-                                                console.log(userid);
-                                                document.getElementById("albumTitle").innerHTML = "<a href='album-page.html?id=" + localbumid + "'>" + data[orig].title + "</a>";
-                                                
-                                                
-                                            }
-                                        }
-                    //this ajax has the user's name and username
-                                      $.ajax({
+                        //this ajax has the album title
+                        $.ajax({
+                            url: "https://jsonplaceholder.typicode.com/albums",
+                            type: "GET",
+                            success: function(data){
+                                console.log("SECOND");
+                                for(var orig=0; orig<data.length; orig++){
+                                    if(localbumid == data[orig].id){
+                                        userid = data[orig].userId;
+                                        alb_id = data[orig].id;
+                                        
+                                        alb_title = document.createElement("div");
+                                        $(alb_title).addClass("albumTitle");
+                                        
+                                        $(alb_title).text(data[orig].title);
+                                        
+                                        $(".title-name-footer").append(alb_title);
+                                    }
+                                }
+                                
+                                //this ajax has the user's name and username
+                                $.ajax({
                                     url: "https://jsonplaceholder.typicode.com/users",
                                     type: "GET",
                                     success: function(data){
-                                       
-                                        console.log("THIRD");
+                                    console.log("THIRD");
                                         for(var orig=0; orig<data.length; orig++){
                                             if(userid == data[orig].id){
-                                                console.log("user to name okay");
                                                 userpangalan = data[orig].name;
-                                                document.getElementById("pic").innerHTML += "<a href='user-profile.html?id=" + userid + "'><b>" + data[orig].name + "</b>" + data[orig].username + "</a>";
-                                            }
+                                                
+                                                username = document.createElement("div");
+                                                $(username).addClass("user_name");
+                                                
+                                                $(username).text(data[orig].name);
+                                                
+                                                $(".title-name-footer").append(username);
+                                            }                              
                                         }
- 
-                                        
-                                    }
-                                });  
-                                    }
+                                    }  
                                 });
-                    
-                    
-                            
-                }
-                });
-               
-            }  
+                            }
+                        });  
+                    }
+               });
+            }
             
               
             
 			// NEW FUNCTION
 			// Basicall if you have link.html?var=n
 			// GetURLParameter(var) will return n
-			function GetURLParameter(sParam)
-{
-			var sPageURL = window.location.search.substring(1);
-			var sURLVariables = sPageURL.split('&');
-			for (var i = 0; i < sURLVariables.length; i++) 
-			{
-				var sParameterName = sURLVariables[i].split('=');
-				if (sParameterName[0] == sParam) 
-			{
-				return sParameterName[1];
-        }
-    }
-}
-			
+			function GetURLParameter(sParam){
+			     var sPageURL = window.location.search.substring(1);
+			     var sURLVariables = sPageURL.split('&');
+			     for (var i = 0; i < sURLVariables.length; i++){
+			     	var sParameterName = sURLVariables[i].split('=');
+			     	if (sParameterName[0] == sParam){
+                        return sParameterName[1];
+                    }
+                }
+            }
             
             $(document).ready(function(){
-               
-				
-              
 			   var tempID = GetURLParameter('id');
 				
                 showPhoto(tempID);
 				showUserName(tempID);
-               
+                
+                $(".title-name-footer").on('click', ".albumTitle", function(){
+                    var url = "album-page.html?id=" + alb_id;
+                    
+                    document.location.href = url;
+                });
+                
+                $(".title-name-footer").on('click', ".user_name", function(){
+                    var url = "user-profile.html?id=" + userid;
+                    
+                    document.location.href = url;
+                });
             });
         </script>
+    </head>
+    
+    <body>
+        <div class="header">
+            <div id="header-logo">
+                <p>placeholder</p>
+            </div>
+            <div class="header-buttons">
+                <a href="index.html"><div id="home-button"></div></a>
+                <a href="all-photos-page.html"><div id="album-button"></div></a>
+            </div>
+        </div>
         
+        <div class="content">
+            <div class="title-name-head">
+            </div>
+            
+            <div id="photos-container">
+                <div id="pic"></div>
+            </div>
+            <div class="title-name-footer">
+            </div>  
+        </div>   
     </body>
  
 </html>
