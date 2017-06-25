@@ -6,6 +6,8 @@
         
         <script src = "jquery-3.2.1.js"></script>
         
+        <title>User Profile</title>
+        
         <style>
             body{
                 padding:0;
@@ -82,7 +84,22 @@
                 filter:drop-shadow(2px 2px #557c83);
                 transition-duration:0.5s;
                 transition-timing-function:ease;
-            }          
+            }
+            #users-button{
+                width:38px;
+                height:29px;
+                margin-top:-40px;
+                background-image:url("spritesheet.png");
+                background-position:-67px 0px;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #users-button:hover{
+                opacity:0.5;
+                filter:drop-shadow(2px 2px #557c83);
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }            
             .wrapper{
                 width:1000px;
                 margin:0 auto;
@@ -113,18 +130,13 @@
                 margin-left:20px;
                 margin-right:20px; 
                 margin-top:20px;
-                margin-bottom:10px;
+                margin-bottom:5px;
                 color:#557c83;
                 font-size:150%;
                 font-style:italic;
                 font-family:'Montserrat', sans-serif;
                 transition-duration:0.5s;
                 transition-timing-function:ease;
-            }
-            .album-title{
-                background-color:#557c83;
-                color:#f0f0f0;
-                padding:5px;
             }
             .album-title:hover{
                 opacity:0.5;
@@ -163,6 +175,20 @@
             }
             .photo-item{
                 display:inline-block;
+            }
+            .view-alb{
+                width:560px;
+                height:auto;
+                margin-left:20px;
+                margin-right:20px;
+                margin-bottom:20px;
+                background-color:#dbdbdb;
+                color:#557c83;
+                border:none;
+                font-size:150%;
+                font-family: "FontAwesome";
+                content:"\f141";
+                transition-timing-function:ease;
             }
             
             /* sidebar */
@@ -272,7 +298,7 @@
             .view-photos{
                 margin-bottom:20px;
             }
-            .view-posts:hover, .view-photos:hover{
+            .view-posts:hover, .view-photos:hover, .view-alb:hover{
                 opacity:0.5;
                 transition-duration:0.5s;
                 transition-timing-function:ease;
@@ -303,10 +329,10 @@
                 color:#557c83;
                 font-family:'Montserrat', sans-serif;
                 font-size:150%;
-                position: fixed; 
-                bottom: 20px;
-                right: 30px; 
-                z-index: 99; 
+                position: fixed; /* Fixed/sticky position */
+                bottom: 20px; /* Place the button at the bottom of the page */
+                right: 30px; /* Place the button 30px from the right */
+                z-index: 99; /* Make sure it does not overlap */
             }
             #view-button:hover, #scrollUp:hover{
                 opacity:0.5;
@@ -321,6 +347,7 @@
             var albums = [];
             var x = 5;
             
+            /*
             window.onload = function() {
                 var url = document.location.href,
                 params = url.split('?')[1].split('&'),
@@ -338,6 +365,7 @@
                 initializeProfile(name);
                 
             }
+            */
             
             window.onscroll = function(){
                 if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 20) {
@@ -385,14 +413,13 @@
                 this.thumbnailUrl = thumbnailUrl;
             }
             
-            function initializeProfile(name){
+            function initializeProfile(id){
                 $.ajax({
                     url: "https://jsonplaceholder.typicode.com/users",
                     type: "GET",
                     success: function(data){
                         for(i=0; i<data.length; i++){
-                            if((data[i].name).localeCompare(name) == 0 ||
-                               (data[i].username).localeCompare(name) == 0){
+                            if(data[i].id == id){
                                 user = new Profile(data[i].id, data[i].name,
                                                    data[i].username, data[i].email,
                                                    data[i].address, data[i].phone,
@@ -402,8 +429,9 @@
                                 createSideBar();
                                 getPosts();
                             }
-                        }
+                        
                         document.title = user.name;
+                    }
                     }
                 });
             }
@@ -487,7 +515,7 @@
                     success: function(data){
                         for(var i=0; i<data.length; i++){
                             if(data[i].userId == user.id){
-                                var post = new Post(data[i].id, data[i-1].userId, data[i].title, data[i].body);
+                                var post = new Post(data[i].id, data[i].userId, data[i].title, data[i].body);
                                 
                                 posts.push(post);
                             }
@@ -568,11 +596,14 @@
                     var new_pic = document.createElement("div");
                     var new_title = document.createElement("div");
                     var new_phic = document.createElement("div");
+                    var new_button = document.createElement("button");
                     
                     $(new_pic).addClass("post-item-container");
                     $(new_title).addClass("album-title");
+                    $(new_button).addClass("view-alb");
                     
                     $(new_title).text(albums[i-1].title);
+                    $(new_button).text("+");
                     $(new_pic).append(new_title);
                     
                     if(albums[i-1].length <= 3 && albums[i-1].length > 0){
@@ -613,6 +644,7 @@
                     }
                     
                     $(new_pic).append(new_phic);
+                    $(new_pic).append(new_button);
                     
                     $(".posts-container").append(new_pic);
                 }
@@ -643,11 +675,14 @@
                     var new_pic = document.createElement("div");
                     var new_title = document.createElement("div");
                     var new_phic = document.createElement("div");
+                    var new_button = document.createElement("button");
                     
                     $(new_pic).addClass("post-item-container");
                     $(new_title).addClass("album-title");
+                    $(new_button).addClass("view-alb");
                     
                     $(new_title).text(albums[i-1].title);
+                    $(new_button).text("+");
                     $(new_pic).append(new_title);
                     
                     if(albums[i-1].length <= 3 && albums[i-1].length > 0){
@@ -688,12 +723,33 @@
                     }
                     
                     $(new_pic).append(new_phic);
+                    $(new_pic).append(new_button);
                     
                     $(".posts-container").append(new_pic);
                 }
             }
             
+            // NEW FUNCTION
+			// Basicall if you have link.html?var=n
+			// GetURLParameter(var) will return n
+			function GetURLParameter(sParam){
+                var sPageURL = window.location.search.substring(1);
+                var sURLVariables = sPageURL.split('&');
+                for (var i = 0; i < sURLVariables.length; i++) {
+                    var sParameterName = sURLVariables[i].split('=');
+                    if (sParameterName[0] == sParam) 
+                        return sParameterName[1];
+                    
+                }
+            }
+			
+            
             $(document).ready(function(){
+                
+                var tempID = GetURLParameter('id');
+			    initializeProfile(tempID);
+            
+                
                 $(".sidebar-container").on('click', ".view-posts", function(){
                     $(".posts-container").empty();
                     viewAllPosts();
@@ -720,13 +776,6 @@
                 $("#scrollUp").click(function(){
                     topFunction();
                 });
-                
-                $(".posts-container").on('click', ".album-title", function(){
-                    var name_temp = $(this).text();
-                    var url = 'album-page.html?name=' + name_temp + "<ur>" + user.name;
-                    
-                    document.location.href = url;
-                });
             });
         </script>
     </head>
@@ -739,6 +788,7 @@
             <div class="header-buttons">
                 <a href="index.html"><div id="home-button"></div></a>
                 <a href="all-photos-page.html"><div id="album-button"></div></a>
+                <div id="users-button"></div>
             </div>
         </div>
         
@@ -759,5 +809,7 @@
             </div>
             
         </div>
+            
+            
     </body>
 </html>
