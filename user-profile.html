@@ -591,6 +591,8 @@
                 
             }
             
+            
+            
             function assembleAIC(x){
                 for(var i=albums.length-x+5; i>albums.length-x; i--){
                     var new_pic = document.createElement("div");
@@ -602,23 +604,29 @@
                     $(new_title).addClass("album-title");
                     $(new_button).addClass("view-alb");
                     
+                    
                     $(new_title).text(albums[i-1].title);
                     $(new_button).text("+");
                     $(new_pic).append(new_title);
                     
+                   
                     if(albums[i-1].length <= 3 && albums[i-1].length > 0){
                         var new_ab = document.createElement("div");
                         $(new_ab).addClass("album-photos");
                         for(var j=0; j<(albums[i-1].photos).length; j++){
+                            var indivLink = document.createElement("a");
                             var new_phic = document.createElement("div");
                             var new_photo = document.createElement("img");
+                            
                             
                             $(new_phic).addClass("photo-item-container");
                             $(new_photo).addClass("photo-item");
                             
                             new_photo.src = albums[i-1].photos[j].thumbnailUrl + "";
+                            indivLink.setAttribute('href', 'showIndivPhoto.html?id=' + albums[i-1].photos[j].id);
                             
-                            $(new_phic).append(new_photo);
+                            $(indivLink).append(new_photo);
+                            $(new_phic).append(indivLink);
                             $(new_ab).append(new_phic);
                         }
                         
@@ -629,6 +637,7 @@
                         var new_ab = document.createElement("div");
                         $(new_ab).addClass("album-photos");
                         for(var j=0; j<6; j++){
+                            var indivLink = document.createElement("a");
                             var new_phic = document.createElement("div");
                             var new_photo = document.createElement("img");
                             
@@ -636,8 +645,10 @@
                             $(new_photo).addClass("photo-item");
                             
                             new_photo.src = albums[i-1].photos[j].thumbnailUrl + "";
+                            indivLink.setAttribute('href', 'showIndivPhoto.html?id=' + albums[i-1].photos[j].id);
                             
-                            (new_phic).append(new_photo);
+                            $(indivLink).append(new_photo);
+                            $(new_phic).append(indivLink);
                             $(new_ab).append(new_phic);
                         }    
                         $(new_pic).append(new_ab);
