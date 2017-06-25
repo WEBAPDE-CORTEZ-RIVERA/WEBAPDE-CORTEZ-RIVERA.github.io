@@ -123,7 +123,7 @@
                 transition-duration:0.5s;
                 transition-timing-function:ease;
             }
-            .title{
+            .title, .album-title{
                 margin-left:20px;
                 margin-right:20px; 
                 margin-top:20px;
@@ -132,6 +132,13 @@
                 font-size:150%;
                 font-style:italic;
                 font-family:'Montserrat', sans-serif;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            .album-title:hover{
+                opacity:0.5;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
             }
             .content{
                 margin-left:20px;
@@ -140,6 +147,45 @@
                 color:#000000;
                 font-size:90%;
                 font-family:'Montserrat', sans-serif;
+            }
+            .album-photos{
+                width:600px;
+                align-items:center;
+            }
+            .photo-item-container{
+                float:left;
+                width:auto;
+                height:auto;
+                padding:2%;
+                margin-left:20px; 
+                margin-bottom:20px;
+                display: inline-block;
+                background-color:#dbdbdb;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            .photo-item-container:hover{
+                background-color:#f0f0f0;
+                box-shadow:0px 20px #557c83;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            .photo-item{
+                display:inline-block;
+            }
+            .view-alb{
+                width:560px;
+                height:auto;
+                margin-left:20px;
+                margin-right:20px;
+                margin-bottom:20px;
+                background-color:#dbdbdb;
+                color:#557c83;
+                border:none;
+                font-size:150%;
+                font-family: "FontAwesome";
+                content:"\f141";
+                transition-timing-function:ease;
             }
             
             /* sidebar */
@@ -171,6 +217,8 @@
                 color:#557c83;
                 font-size:140%;
                 font-family:'Montserrat', sans-serif;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
             }
             .name:hover{
                 opacity:0.5;
@@ -247,7 +295,7 @@
             .view-photos{
                 margin-bottom:20px;
             }
-            .view-posts:hover, .view-photos:hover{
+            .view-posts:hover, .view-photos:hover, .view-alb:hover{
                 opacity:0.5;
                 transition-duration:0.5s;
                 transition-timing-function:ease;
@@ -278,6 +326,7 @@
         <script>
             var user;
             var posts = [];
+            var albums = [];
             var x = 5;
             
             window.onload = function() {
@@ -312,6 +361,21 @@
                 this.userID = userID;
                 this.title = title;
                 this.content = content;
+            }
+            
+            var Album = function(id, userID, title){
+                this.id = id;
+                this.userID = userID;
+                this.title = title;
+                this.photos = [];
+            }
+            
+            var Photo = function(albumId, id, title, url, thumbnailUrl){
+                this.albumId = albumId;
+                this.id = id;
+                this.title = title;
+                this.url = url;
+                this.thumbnailUrl = thumbnailUrl;
             }
             
             function initializeProfile(name){
@@ -418,9 +482,7 @@
                             if(data[i].userId == user.id){
                                 var post = new Post(data[i].id, data[i-1].userId, data[i].title, data[i].body);
                                 
-                                posts.push(post); 
-                                
-                                console.log(post);
+                                posts.push(post);
                             }
                         }
                         assemblePIC(x); 
@@ -446,6 +508,111 @@
                     
                     $(".posts-container").append(new_pic);
                 }
+                
+                getAlbums();
+            }
+            
+            function getAlbums(){
+                var flag = 0;
+                
+                $.ajax({
+                    url: "https://jsonplaceholder.typicode.com/albums",
+                    type: "GET",
+                    success: function(data){
+                      
+                        for(var i=0; i<data.length; i++){
+                            if(user.id == data[i].userId){
+                                var album = new Album(data[i].id, data[i].userId, data[i].title);
+                                albums.push(album);   
+                                flag = 1;
+                            }
+                        }
+                        
+                        if(flag == 1){
+                            getPics();   
+                        }
+                    }
+                });        
+            }
+            
+            function getPics(){
+                $.ajax({
+                    url: "https://jsonplaceholder.typicode.com/photos",
+                    type: "GET",
+                    success: function(data){
+                      for(var i=data.length; i>0; i--){
+                          for(var j=0; j<albums.length; j++){
+                              if(albums[j].id == data[i-1].albumId){
+                                  var photo = new Photo(data[i-1].albumId, data[i-1].id, data[i-1].title, data[i-1].url, data[i-1].thumbnailUrl);
+                                  
+                                  albums[j].photos.push(photo);
+                              }
+                          }
+                      }
+                      assembleAIC(x);  
+                    }
+                });
+                
+                
+            }
+            
+            function assembleAIC(x){
+                for(var i=albums.length-x+5; i>albums.length-x; i--){
+                    var new_pic = document.createElement("div");
+                    var new_title = document.createElement("div");
+                    var new_phic = document.createElement("div");
+                    var new_button = document.createElement("button");
+                    
+                    $(new_pic).addClass("post-item-container");
+                    $(new_title).addClass("album-title");
+                    $(new_button).addClass("view-alb");
+                    
+                    $(new_title).text(albums[i-1].title);
+                    $(new_button).text("+");
+                    $(new_pic).append(new_title);
+                    
+                    if(albums[i-1].length <= 3 && albums[i-1].length > 0){
+                        var new_ab = document.createElement("div");
+                        $(new_ab).addClass("album-photos");
+                        for(var j=0; j<(albums[i-1].photos).length; j++){
+                            var new_phic = document.createElement("div");
+                            var new_photo = document.createElement("img");
+                            
+                            $(new_phic).addClass("photo-item-container");
+                            $(new_photo).addClass("photo-item");
+                            
+                            new_photo.src = albums[i-1].photos[j].thumbnailUrl + "";
+                            
+                            $(new_phic).append(new_photo);
+                            $(new_ab).append(new_phic);
+                        }
+                        
+                        $(new_pic).append(ab);
+                    }
+                    
+                    else{
+                        var new_ab = document.createElement("div");
+                        $(new_ab).addClass("album-photos");
+                        for(var j=0; j<6; j++){
+                            var new_phic = document.createElement("div");
+                            var new_photo = document.createElement("img");
+                            
+                            $(new_phic).addClass("photo-item-container");
+                            $(new_photo).addClass("photo-item");
+                            
+                            new_photo.src = albums[i-1].photos[j].thumbnailUrl + "";
+                            
+                            (new_phic).append(new_photo);
+                            $(new_ab).append(new_phic);
+                        }    
+                        $(new_pic).append(new_ab);
+                    }
+                    
+                    $(new_pic).append(new_phic);
+                    $(new_pic).append(new_button);
+                    
+                    $(".posts-container").append(new_pic);
+                }
             }
             
             function viewAllPosts(){
@@ -468,12 +635,77 @@
                 }
             }
             
+            function viewAllAlbums(){
+                for(var i=albums.length; i>0; i--){
+                    var new_pic = document.createElement("div");
+                    var new_title = document.createElement("div");
+                    var new_phic = document.createElement("div");
+                    var new_button = document.createElement("button");
+                    
+                    $(new_pic).addClass("post-item-container");
+                    $(new_title).addClass("album-title");
+                    $(new_button).addClass("view-alb");
+                    
+                    $(new_title).text(albums[i-1].title);
+                    $(new_button).text("+");
+                    $(new_pic).append(new_title);
+                    
+                    if(albums[i-1].length <= 3 && albums[i-1].length > 0){
+                        var new_ab = document.createElement("div");
+                        $(new_ab).addClass("album-photos");
+                        for(var j=0; j<(albums[i-1].photos).length; j++){
+                            var new_phic = document.createElement("div");
+                            var new_photo = document.createElement("img");
+                            
+                            $(new_phic).addClass("photo-item-container");
+                            $(new_photo).addClass("photo-item");
+                            
+                            new_photo.src = albums[i-1].photos[j].thumbnailUrl + "";
+                            
+                            $(new_phic).append(new_photo);
+                            $(new_ab).append(new_phic);
+                        }
+                        
+                        $(new_pic).append(ab);
+                    }
+                    
+                    else{
+                        var new_ab = document.createElement("div");
+                        $(new_ab).addClass("album-photos");
+                        for(var j=0; j<6; j++){
+                            var new_phic = document.createElement("div");
+                            var new_photo = document.createElement("img");
+                            
+                            $(new_phic).addClass("photo-item-container");
+                            $(new_photo).addClass("photo-item");
+                            
+                            new_photo.src = albums[i-1].photos[j].thumbnailUrl + "";
+                            
+                            (new_phic).append(new_photo);
+                            $(new_ab).append(new_phic);
+                        }    
+                        $(new_pic).append(new_ab);
+                    }
+                    
+                    $(new_pic).append(new_phic);
+                    $(new_pic).append(new_button);
+                    
+                    $(".posts-container").append(new_pic);
+                }
+            }
+            
             $(document).ready(function(){
                 var x = 5;
                 
                 $(".sidebar-container").on('click', ".view-posts", function(){
                     $(".posts-container").empty();
                     viewAllPosts();
+                    x = 5;
+                });
+                
+                $(".sidebar-container").on('click', ".view-photos", function(){
+                    $(".posts-container").empty();
+                    viewAllAlbums();
                     x = 5;
                 });
                 
@@ -503,6 +735,7 @@
             </div>
          
             <div class="posts-container">
+                
             </div>
             
             <div class="footer">
