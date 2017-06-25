@@ -658,14 +658,11 @@
                     var new_pic = document.createElement("div");
                     var new_title = document.createElement("div");
                     var new_phic = document.createElement("div");
-                    var new_button = document.createElement("button");
                     
                     $(new_pic).addClass("post-item-container");
                     $(new_title).addClass("album-title");
-                    $(new_button).addClass("view-alb");
                     
                     $(new_title).text(albums[i-1].title);
-                    $(new_button).text("+");
                     $(new_pic).append(new_title);
                     
                     if(albums[i-1].length <= 3 && albums[i-1].length > 0){
@@ -706,7 +703,6 @@
                     }
                     
                     $(new_pic).append(new_phic);
-                    $(new_pic).append(new_button);
                     
                     $(".posts-container").append(new_pic);
                 }
