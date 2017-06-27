@@ -13,8 +13,7 @@
         <title>User Profile</title>
         
         <style>
-            #map {
-                position:inherit;
+            #map {  
                 height:300px;
                 width: 1000px;
                 margin-left:auto;
@@ -383,8 +382,8 @@
             
             function initMap(lat_u, lng_u) {
                 if(user_flag == 1){
-                    var uluru = new google.maps.LatLng(lat_u, lng_u);
-		    console.log("uluru" + uluru);
+                    var uluru = {lat: lat_u, lng: lng_u};
+                    
                     var map = new google.maps.Map(document.getElementById('map'), {
                       zoom: 4,
                       center: uluru
@@ -765,6 +764,7 @@
                 $(".sidebar-container").on('click', ".view-posts", function(){
                     $(".posts-container").empty();
                     $("#view-button").hide();
+                    $("#map").hide();
                     viewAllPosts();
                     x = 5;
                 });
@@ -773,6 +773,7 @@
                     $(".posts-container").empty();
                     $("#view-button").hide();
                     viewAllAlbums();
+                    $("#map").hide();
                     x = 5;
                 });
                 
@@ -780,6 +781,7 @@
                     $(".posts-container").empty();
                     $("#view-button").show();
                     x = 5;
+                    $("#map").show();
                     getPosts();
                 });
                 
