@@ -165,6 +165,89 @@
             transition-duration:0.5s;
             transition-timing-function:ease;
         }
+        
+        /* modal */
+            .modal {
+                display:none; 
+                position:fixed; 
+                z-index:1; 
+                padding-top:100px; 
+                left:0;
+                top:0;
+                width:100%; 
+                height:100%; 
+                overflow:auto; 
+                background-color:rgb(0,0,0); 
+                background-color:rgba(0,0,0,0.9); 
+            }
+            .inner-modal{
+                width:1000px;
+                height:inherit;
+                margin:0 auto;
+                padding-bottom:50px;
+            }
+            #modal-content {
+                float:left;
+                margin:auto;
+                display:block;
+                width:600px;
+                max-width:600px;
+            }
+            #caption, #u_name, #a_name {
+                margin-left:20px;
+                float:right;
+                margin:auto;
+                display:flex;
+                flex-direction:column;
+                width:350px;
+                max-width:400px;
+                text-align:left;
+                color:#f0f0f0;
+                font-size:100%;
+                font-family:'Montserrat', sans-serif;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #u_name, #a_name{
+                font-style:underline;
+            }
+            #u_name:hover, #a_name:hover{
+                opacity:0.5;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+            #caption {
+                padding-top:20px;
+            }
+            #modal-content{ 
+                -webkit-animation-name:zoom;
+                -webkit-animation-duration:0.6s;
+                animation-name:zoom;
+                animation-duration:0.6s;
+            }
+            @-webkit-keyframes zoom {
+                from {-webkit-transform:scale(0)} 
+                to {-webkit-transform:scale(1)}
+            }
+            @keyframes zoom {
+                from {transform:scale(0)} 
+                to {transform:scale(1)}
+            }
+            
+            .close{
+                position:absolute;
+                top:15px;
+                right:35px;
+                color:#f1f1f1;
+                font-size:40px;
+                font-weight:bold;
+                transition:0.3s;
+            }
+            .close:hover, .close:focus{
+                color:#bbb;
+                text-decoration:none;
+                cursor:pointer;
+            }
     </style>
     
     <script>
@@ -189,6 +272,22 @@
             this.thumbnailUrl = thumbnailUrl;
         }
         
+        var User = function(id, name, username){
+            this.id = id;
+            this.name = name;
+            this.username = username;
+        }
+        
+        var alb_title;
+        var uploader_id;
+        var caption_photo;
+        
+        var chosen_photo;
+        var chosen_user;
+        var chosen_album;
+        
+        var flag = 0;
+        
         window.onscroll = function(){
             if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 20) {
                 document.getElementById("scrollUp").style.display = "block";
@@ -196,6 +295,111 @@
                 document.getElementById("scrollUp").style.display = "none";
             }
         };
+        
+        /* modal start */
+        function onClick(element) {
+            document.getElementById("scrollUp").style.display = "none";
+            getClickedPhoto(element.firstChild.src);
+        }
+        
+        function getClickedPhoto(url){
+            $.ajax({
+                url: "https://jsonplaceholder.typicode.com/photos",
+                type: "GET",
+                success: function(data){
+                  for(var i=0; i<data.length; i++){
+                      if(url.localeCompare(data[i].thumbnailUrl) == 0){
+                          var new_photo = document.createElement("img");
+                          
+                          chosen_photo = new Photo(data[i].albumId, data[i].id, data[i].title, data[i].url);
+                          
+                          caption_photo = data[i].title;
+                          
+                          document.getElementById("modal-content").src = data[i].url + "";
+                          
+                          flag = 1;
+                          
+                          if(flag === 1){
+                            getAlbumTitle(chosen_photo.albumId);
+                            console.log(flag);
+                        } 
+                          
+                          break;
+                    }
+                  }
+                }
+            });
+        }
+        
+        function getAlbumTitle(album_id){
+            $.ajax({
+                url: "https://jsonplaceholder.typicode.com/albums",
+                type: "GET",
+                success: function(data){
+                  for(var i=0; i<data.length; i++){
+                      if(data[i].id == album_id){
+                        var new_title = document.createElement("a");
+                          
+                        alb_title = data[i].title;
+                        uploader_id = data[i].userId;
+                        
+                        chosen_album = new Album(data[i].id, data[i].userId, data[i].title);
+                        
+                        new_title.setAttribute('href', 'album-page.html?id=' + chosen_album.id);
+                        
+                        $(new_title).text(alb_title);
+                        $("#caption").append(new_title);
+                          
+                        flag = 2;
+                          
+                        if(flag == 2){
+                            getUser(uploader_id);
+                            console.log(flag);
+                        }
+                        
+                        break;
+                    }
+                  }
+                }
+            });
+        }
+        
+        function getUser(user_id){
+            $.ajax({
+                url: "https://jsonplaceholder.typicode.com/users",
+                type: "GET",
+                success: function(data){
+                  for(var i=0; i<data.length; i++){
+                      if(data[i].id == user_id){
+                        var new_user = document.createElement("a");
+                        var new_cap = document.createElement("p");
+                        chosen_user = new User(data[i].id, data[i].name, data[i].username);
+                          
+                        new_user.setAttribute('href', 'user-profile.html?id=' + chosen_user.id);
+                         
+                        $(new_user).text(chosen_user.name);
+                        $(new_cap).text(caption_photo);
+                        $("#caption").append(new_user);
+                        $("#caption").append(new_cap);
+                          
+                        flag = 3;
+                        
+                        if(flag == 3){      
+                            document.getElementById("myModal").style.display = "block";
+                            flag = 0;
+                        }
+                        
+                          
+                        break;
+                    }
+                  }
+                }
+            });
+        }
+        
+        function onClose(){
+            $("#caption").text("");
+        }
         
         function topFunction() {
             document.body.scrollTop = 0; // For Chrome, Safari and Opera 
@@ -224,7 +428,7 @@
         }
         
         
-        function getUser(alid){
+        function getInitUser(alid){
              $.ajax({
                 url: "https://jsonplaceholder.typicode.com/users",
                 type: "GET",
@@ -250,7 +454,7 @@
             $(new_title).text(album.title);
             $(".title-name").append(new_title);
             
-            getUser(alid);
+            getInitUser(alid);
             storePhotos(alid);
         }
         
@@ -279,7 +483,6 @@
                     success: function(data){
                       
                       for(var orig=0; orig<data.length; orig++){
-                          var indivLink = document.createElement("a");
                           var new_photo = document.createElement("img");
                           var new_pic = document.createElement("div");
                           
@@ -288,9 +491,6 @@
                           $(new_pic).addClass("photo-item-container");
                           
                           new_photo.src = data[orig].thumbnailUrl + "";
-                          indivLink.setAttribute('href', 'showIndivPhoto.html?id=' + data[orig].id);
-                          $(indivLink).append(new_photo);
-                          $(new_pic).append(indivLink);
                           
                           $("#photos-container").append(new_pic);
                           
@@ -312,12 +512,7 @@
                   
                 new_photo.src = photos[i-1].thumbnailUrl + "";
                 
-                indivLink.setAttribute('href', 'showIndivPhoto.html?id=' + photos[i-1].id);
-                
-                console.log(photos[i-1]);
-                  
-                $(indivLink).append(new_photo);
-                $(new_pic).append(indivLink);
+                $(new_pic).append(new_photo);
                   
                 $("#photos-container").append(new_pic);
             }
@@ -339,7 +534,7 @@
 			
         
         $(document).ready(function(){
-            
+             document.getElementById("myModal").style.display = "none";
              var tempID = GetURLParameter('id');
 			 initializeAlbum(tempID);
             
@@ -360,6 +555,15 @@
                 
                 document.location.href = url;
             });
+            
+            $("#photos-container").on('click', ".photo-item-container", function(){
+                 onClick(this);
+             });
+             
+             $(".modal").on('click', ".close", function(){
+                 document.getElementById("scrollUp").style.display = "block";
+                 onClose();
+             });
         });
         
     </script>
@@ -377,6 +581,20 @@
         
         <div class="title-name"></div>
         <div id="photos-container"></div>
+        
+        <div id="myModal" class="modal">
+            <!-- The Close Button -->
+            <span class="close" onclick="document.getElementById('myModal').style.display='none'">&times;</span>
+            
+            <div class="inner-modal">
+                <img id="modal-content">
+            
+                <!-- Modal Caption (Image Text) -->
+                <div id="u_name"></div>
+                <div id="a_name"></div>
+                <div id="caption"></div>
+            </div>
+        </div>
             
         <div class="footer">
             <button id="view-button">VIEW MORE</button>
