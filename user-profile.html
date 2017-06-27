@@ -383,7 +383,7 @@
             
             function initMap(lat_u, lng_u) {
                 if(user_flag == 1){
-                    var uluru = {lat: lat_u, lng: lng_u};
+                    var uluru = new google.maps.LatLng(lat_u, lng_u);
 		    console.log("uluru" + uluru);
                     var map = new google.maps.Map(document.getElementById('map'), {
                       zoom: 4,
