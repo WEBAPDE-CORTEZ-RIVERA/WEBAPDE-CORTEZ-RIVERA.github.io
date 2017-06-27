@@ -6,9 +6,20 @@
         
         <script src = "jquery-3.2.1.js"></script>
         
+        <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTJJAKiNm5Kj9NEWcQadtOGKe7h-aqVZI&callback=initMap">
+        </script>
+        
         <title>User Profile</title>
         
         <style>
+            #map {
+                position:inherit;
+                height:300px;
+                width: 1000px;
+                margin-left:auto;
+                margin-right:auto;
+            }
             body{
                 padding:0;
                 margin:0;
@@ -322,26 +333,7 @@
             var posts = [];
             var albums = [];
             var x = 5;
-            
-            /*
-            window.onload = function() {
-                var url = document.location.href,
-                params = url.split('?')[1].split('&'),
-                data = {}, tmp;
-                for (var i = 0, l = params.length; i < l; i++) {
-                    tmp = params[i].split('=');
-                    data[tmp[0]] = tmp[1];
-                }
-                
-                var name = decodeURI(data.name);
-                name = name.replace(/@/g, '');
-                
-                document.getElementById("scrollUp").style.display = "none";
-                
-                initializeProfile(name);
-                
-            }
-            */
+            var user_flag = 0;
             
             window.onscroll = function(){
                 if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 20) {
@@ -389,6 +381,22 @@
                 this.thumbnailUrl = thumbnailUrl;
             }
             
+            function initMap(lat_u, lng_u) {
+                if(user_flag == 1){
+                    console.log(lat_u + " " + lng_u);
+                    var uluru = {lat: lat_u, lng: lng_u};
+                    var map = new google.maps.Map(document.getElementById('map'), {
+                      zoom: 4,
+                      center: uluru
+                    });
+                    
+                    var marker = new google.maps.Marker({
+                      position: uluru,
+                      map: map
+                    });
+                }
+            }
+            
             function initializeProfile(id){
                 $.ajax({
                     url: "https://jsonplaceholder.typicode.com/users",
@@ -406,6 +414,15 @@
                                 getPosts();
                                 
                                 document.title = user.name;
+                                
+                                
+                                var la = parseFloat(data[i].address.geo.lat);
+                                var lg = parseFloat(data[i].address.geo.lng);
+                                
+                                user_flag = 1;
+                                
+                                initMap(la, lg);
+                                
                                 break;
                             }
                         }
@@ -799,6 +816,10 @@
                 <a href="index.html"><div id="home-button"></div></a>
                 <a href="all-photos-page.html"><div id="album-button"></div></a>
             </div>
+        </div>
+        
+        <div class="map-container">
+            <div id="map"></div>
         </div>
         
         <div class="wrapper">

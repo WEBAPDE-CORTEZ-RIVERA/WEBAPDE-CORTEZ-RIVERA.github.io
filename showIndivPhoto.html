@@ -9,7 +9,7 @@
             padding:0;
             margin:0;
             margin-top:120px;
-            background-color:#dbdbdb;
+            background-color:#3d3d3d;
             height:100%;
             justify-content:center;
         }
@@ -81,9 +81,17 @@
             transition-duration:0.5s;
             transition-timing-function:ease;
         }   
+            
+        /* content */
+        .content{
+            width:1000px;
+            height:600px;
+            margin:0 auto;
+        }
         
         .albumTitle, .photoTitle, .user_name{
-            text-align:center;
+            padding-left:20px;
+            text-align:left;
             font-size:150%;
             font-family:'Montserrat', sans-serif;
             color:#557c83;
@@ -91,6 +99,9 @@
             transition-timing-function:ease;
         }
         .user_name{
+            padding-top:50px;
+        }
+        .albumTitle, .photoTitle{
             margin-bottom:50px;
             color:#000000;
             font-size:100%;
@@ -99,7 +110,6 @@
         }
         .photoTitle{
             font-style:italic;
-            padding:20px;
         }
         .albumTitle:hover, .user_name:hover{
             opacity:0.5;
@@ -108,16 +118,24 @@
         }
             
         /* photos */
-        #photos-container, .title-name-head, .title-name-footer{
-            width:100%;
-            text-align:center;
+        #photos-container{
+            margin-top:50px;
+            float:left;
+            width:600px;
         }
+        .title-name-head{
+            background-color:#ffffff;
+            margin-top:50px;
+            float:right;
+            width:400px;
+            height:100%;
+        }
+        
         .img{
             margin-bottom:20px;
             margin-left:auto;
             margin-right:auto;
             width:auto;
-            height:auto;
         }  
         </style>
         
@@ -129,6 +147,8 @@
             var photo_title;
             var username;
             var alb_id;
+            var alb_name;
+            var caption;
            
             
             function showPhoto(given){
@@ -138,17 +158,13 @@
                     success: function(data){
                         for(var orig=0; orig<data.length; orig++){
                             if(given == data[orig].id){ 
-                                photo_title = document.createElement("div");
+                                caption = data[orig].title;
                                 var photo = document.createElement("img");
-                                
+                
                                 $(photo).addClass("img");
-                                $(photo_title).addClass("photoTitle");
-                                
-                                $(photo_title).text(data[orig].title);
                                                        
                                 photo.src = data[orig].url + "";
                                 
-                                $(".title-name-head").append(photo_title);
                                 $("#photos-container").append(photo);
                             }
                         }
@@ -179,13 +195,7 @@
                                     if(localbumid == data[orig].id){
                                         userid = data[orig].userId;
                                         alb_id = data[orig].id;
-                                        
-                                        alb_title = document.createElement("div");
-                                        $(alb_title).addClass("albumTitle");
-                                        
-                                        $(alb_title).text(data[orig].title);
-                                        
-                                        $(".title-name-footer").append(alb_title);
+                                        alb_name = data[orig].title;
                                     }
                                 }
                                 
@@ -198,21 +208,32 @@
                                         for(var orig=0; orig<data.length; orig++){
                                             if(userid == data[orig].id){
                                                 userpangalan = data[orig].name;
-                                                
-                                                username = document.createElement("div");
-                                                $(username).addClass("user_name");
-                                                
-                                                $(username).text(data[orig].name);
-                                                
-                                                $(".title-name-footer").append(username);
                                             }                              
                                         }
+                                        assemblePage();
                                     }  
                                 });
                             }
                         });  
                     }
                });
+            }
+            
+            function assemblePage(){
+                username = document.createElement("div");
+                $(username).addClass("user_name");
+                $(username).text(userpangalan);
+                $(".title-name-head").append(username);
+                
+                alb_title = document.createElement("div");
+                $(alb_title).addClass("albumTitle");
+                $(alb_title).text(alb_name);
+                $(".title-name-head").append(alb_title);
+                
+                photo_title = document.createElement("div");
+                $(photo_title).addClass("photoTitle");
+                $(photo_title).text(caption);
+                $(".title-name-head").append(photo_title);
             }
             
               
@@ -237,13 +258,13 @@
                 showPhoto(tempID);
 				showUserName(tempID);
                 
-                $(".title-name-footer").on('click', ".albumTitle", function(){
+                $(".title-name-head").on('click', ".albumTitle", function(){
                     var url = "album-page.html?id=" + alb_id;
                     
                     document.location.href = url;
                 });
                 
-                $(".title-name-footer").on('click', ".user_name", function(){
+                $(".title-name-head").on('click', ".user_name", function(){
                     var url = "user-profile.html?id=" + userid;
                     
                     document.location.href = url;
@@ -264,14 +285,11 @@
         </div>
         
         <div class="content">
-            <div class="title-name-head">
-            </div>
-            
             <div id="photos-container">
                 <div id="pic"></div>
             </div>
-            <div class="title-name-footer">
-            </div>  
+            <div class="title-name-head">
+            </div>
         </div>   
     </body>
  
